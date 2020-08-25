@@ -26,6 +26,7 @@ from typing import List
 
 import skew
 
+from taggercore.config import ensure_config_is_set
 from taggercore.model import Resource
 from taggercore.scanner import create_resource, sort_resources
 
@@ -36,7 +37,15 @@ GLOBAL_SERVICES = ["route53", "cloudfront", "iam"]
 
 class GlobalScanner:
     @staticmethod
+    @ensure_config_is_set
     def scan(resource_types_to_exclude: List[str]) -> List[Resource]:
+        """
+
+        :param resource_types_to_exclude: resource types which should not be included in the returned resources
+        types are specified as they appear in the ARN pattern e.g. 'restapi'. See the 'type' attribute in the
+        individual resource classes (https://github.com/tobHai/skew/tree/develop/skew/resources/aws)
+        :return:
+        """
         all_scanned_resources = []
         for service in GLOBAL_SERVICES:
             service_uri = "arn:aws:" + service + ":*:*:*/*"

@@ -21,9 +21,11 @@
 # specific language governing permissions and limitations
 # under the License.
 #
+import pytest
 import skew
 
 from taggercore import scanner
+from taggercore.config import TaggercoreConfigError, set_config, Config
 from taggercore.model import Resource
 from taggercore.scanner import RegionScanner, GLOBAL_SERVICES
 from taggercore.tagger import REG_RES_TYPE_NOT_TAGGABLE, REG_RES_TYPE_NOT_SUPPORTED
@@ -74,3 +76,11 @@ class TestRegionScanner:
             "arn:aws:sqs:eu-central-1:111111111111:someq", "someq", "queue", []
         )
         assert skew_scan.call_count == number_of_supported_services
+
+    def test_scan_without_config_set(self):
+        skew.set_config({})
+        set_config(Config())
+        with pytest.raises(TaggercoreConfigError):
+            RegionScanner("eu-central-1").scan(
+                REG_RES_TYPE_NOT_SUPPORTED + REG_RES_TYPE_NOT_TAGGABLE
+            )

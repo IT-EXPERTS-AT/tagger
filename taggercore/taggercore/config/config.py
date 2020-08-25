@@ -21,17 +21,20 @@
 # specific language governing permissions and limitations
 # under the License.
 #
+from typing import Callable
+
 import skew
 
+from . import TaggercoreConfigError
 from .credentials import Credentials
 
 
 class Config:
     def __init__(
-        self,
-        credentials: Credentials = None,
-        profile: str = None,
-        account_id: str = None,
+            self,
+            credentials: Credentials = None,
+            profile: str = None,
+            account_id: str = None,
     ):
         self._credentials = credentials
         self._profile = profile
@@ -70,3 +73,19 @@ def set_config(config_dict: Config):
         {"accounts": {config_dict.account_id: {"profile": config_dict.profile}}}
     )
     _config = config_dict
+
+
+def ensure_config_is_set(func: Callable):
+    """ Verifies that taggercore is configured
+
+    :raises TaggercoreConfigError
+    :param func: function which requires a config object
+    :return:
+    """
+    def function_wrapper(*args):
+        config = get_config()
+        if not config.profile and not config.account_id:
+            raise TaggercoreConfigError
+        else:
+            return func(*args)
+    return function_wrapper

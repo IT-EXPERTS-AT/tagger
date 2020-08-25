@@ -21,10 +21,11 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-
+import pytest
 import skew
 
 from taggercore import scanner
+from taggercore.config import TaggercoreConfigError, set_config, Config
 from taggercore.model import Resource
 from taggercore.scanner import GlobalScanner, GLOBAL_SERVICES
 from taggercore.tagger import GLOBAL_RES_TYPE_NOT_TAGGABLE
@@ -67,7 +68,7 @@ def mock_scan(service: str):
 
 
 class TestGlobalScanner:
-    def test_global_scanner(self, mocker, account_and_profile_configured):
+    def test_global_scanner_with_config_set(self, mocker, account_and_profile_configured):
         skew_scan = mocker.patch.object(scanner.global_scanner.skew, "scan")
         skew.scan.side_effect = mock_scan
 
@@ -103,4 +104,10 @@ class TestGlobalScanner:
             in actual
         )
         assert skew_scan.call_count == len(GLOBAL_SERVICES)
+
+    def test_global_scanner_without_config_set(self):
+        set_config(Config())
+        with pytest.raises(TaggercoreConfigError):
+            GlobalScanner().scan(GLOBAL_RES_TYPE_NOT_TAGGABLE)
+
 

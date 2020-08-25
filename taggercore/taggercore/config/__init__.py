@@ -21,6 +21,6 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-from .config import set_config, get_config, Config
-from .credentials import Credentials
 from .config_error import TaggercoreConfigError
+from .config import set_config, get_config, Config, ensure_config_is_set
+from .credentials import Credentials

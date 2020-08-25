@@ -26,6 +26,7 @@ from typing import List
 
 import skew as skew
 
+from taggercore.config import ensure_config_is_set
 from taggercore.manipulation import ArnManipulationStrategyFactory
 from taggercore.model import Resource
 from taggercore.scanner import create_resource, sort_resources
@@ -43,6 +44,7 @@ class RegionScanner:
         """
         self._region = region
 
+    @ensure_config_is_set
     def scan(self, resource_types_to_exclude: List[str]) -> List[Resource]:
         """
 
