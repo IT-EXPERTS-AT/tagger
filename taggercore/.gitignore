@@ -1,0 +1,6 @@
+.tox
+taggercore.egg-info
+.coverage
+taggercore.iml
+build
+dist
