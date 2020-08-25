@@ -82,10 +82,13 @@ def ensure_config_is_set(func: Callable):
     :param func: function which requires a config object
     :return:
     """
+
     def function_wrapper(*args):
         config = get_config()
         if not config.profile and not config.account_id:
-            raise TaggercoreConfigError
+            raise TaggercoreConfigError(
+                f"No profile and no account id found. Please set the configuration before using {func}")
         else:
             return func(*args)
+
     return function_wrapper
