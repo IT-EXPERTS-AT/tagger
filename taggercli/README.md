@@ -1,5 +1,6 @@
 # Taggercli
-
+## Demo
+![Tagger Demo](tagger-demo.gif)
 ## Installation
 
 The taggercli can be installed via pip.  
