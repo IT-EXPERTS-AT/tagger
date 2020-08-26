@@ -2,7 +2,7 @@
 # Copyright (c) 2020 it-eXperts IT-Dienstleistungs GmbH.
 #
 # This file is part of tagger
-# (see TBD).
+# (see https://github.com/IT-EXPERTS-AT/tagger).
 #
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
@@ -48,8 +48,10 @@ class GlobalScanner:
         """
         all_scanned_resources = []
         for service in GLOBAL_SERVICES:
+            print("iterating")
             service_uri = "arn:aws:" + service + ":*:*:*/*"
             resources = skew.scan(service_uri)
+            print(f"scan {service_uri}")
             for resource in resources:
                 if resource.resourcetype in resource_types_to_exclude:
                     continue

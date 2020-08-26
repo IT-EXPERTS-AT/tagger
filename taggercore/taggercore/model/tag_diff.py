@@ -2,7 +2,7 @@
 # Copyright (c) 2020 it-eXperts IT-Dienstleistungs GmbH.
 #
 # This file is part of tagger
-# (see TBD).
+# (see https://github.com/IT-EXPERTS-AT/tagger).
 #
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
