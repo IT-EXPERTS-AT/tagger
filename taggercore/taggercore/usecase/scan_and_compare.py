@@ -21,27 +21,30 @@
 # specific language governing permissions and limitations
 # under the License.
 #
+from typing import List
+
 from taggercore.tagger import REG_RES_TYPE_NOT_TAGGABLE, REG_RES_TYPE_NOT_SUPPORTED
 from taggercore.tagger import GLOBAL_RES_TYPE_NOT_TAGGABLE
-from taggercore.model import Tag
+from taggercore.model import Tag, ResourceWithTagDiffs
 from taggercore.scanner import RegionScanner, GlobalScanner
-from taggercore.usecase import create_report
-from test.stubs import regional_resources, global_resources
 
 
-class TestCreateReport:
-    def test_create_report(self, mocker):
-        mocked_region_scanner_scan = mocker.patch.object(RegionScanner, "scan")
-        mocked_region_scanner_scan.return_value = regional_resources()
-        mocked_global_scanner_scan = mocker.patch.object(GlobalScanner, "scan")
-        mocked_global_scanner_scan.return_value = global_resources()
+def scan_and_compare_resources(region: str, tags: List[Tag]) -> List[ResourceWithTagDiffs]:
+    """ Compares resources tags to given :param tags and creates a list of diffs
 
-        tags = [Tag("Owner", "Hugo"), Tag("Created", "2020-08-10")]
+    Scans resources in given :param region and global resources.
+    Resources which are not taggable or currently not supported in the tagger classes are NOT returned.
+    :param region: AWS region code (https://docs.aws.amazon.com/general/latest/gr/rande.html for a full list)
+    :param tags: tags to compare the resource tags with
 
-        actual = create_report("eu-central-1", tags)
-
-        assert len(actual) == len(regional_resources()) + len(global_resources())
-        mocked_global_scanner_scan.assert_called_with(GLOBAL_RES_TYPE_NOT_TAGGABLE)
-        mocked_region_scanner_scan.assert_called_with(
-            REG_RES_TYPE_NOT_SUPPORTED + REG_RES_TYPE_NOT_TAGGABLE
+    :return resources with tag comparison result
+    """
+    resources = RegionScanner(region).scan(
+        REG_RES_TYPE_NOT_SUPPORTED + REG_RES_TYPE_NOT_TAGGABLE
+    ) + GlobalScanner().scan(GLOBAL_RES_TYPE_NOT_TAGGABLE)
+    resources_with_diffs = []
+    for resource in resources:
+        resources_with_diffs.append(
+            ResourceWithTagDiffs(resource, resource.compare_tags(tags))
         )
+    return resources_with_diffs

@@ -21,7 +21,7 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-from .create_report import create_report
+from .scan_and_compare import scan_and_compare_resources
 from .scan import scan_region, scan_global, scan_region_and_global
 from .perform_tagging import perform_tagging
 from .configure_account_and_profile import configure_account_and_profile
