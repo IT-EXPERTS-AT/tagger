@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<!--
+-- Copyright (c) 2020 it-eXperts IT-Dienstleistungs GmbH.
+--
+-- This file is part of tagger
+-- (see https://github.com/IT-EXPERTS-AT/tagger).
+--
+-- Licensed to the Apache Software Foundation (ASF) under one
+-- or more contributor license agreements.  See the NOTICE file
+-- distributed with this work for additional information
+-- regarding copyright ownership.  The ASF licenses this file
+-- to you under the Apache License, Version 2.0 (the
+-- "License"); you may not use this file except in compliance
+-- with the License.  You may obtain a copy of the License at
+--
+--   http://www.apache.org/licenses/LICENSE-2.0
+--
+-- Unless required by applicable law or agreed to in writing,
+-- software distributed under the License is distributed on an
+-- "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+-- KIND, either express or implied.  See the License for the
+-- specific language governing permissions and limitations
+-- under the License.
+-->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body>
+<div id="app">
+    <nav class="flex items-center flex-wrap bg-green-500 p-6 space-x-4">
+        <div class="flex items-center flex-shrink-0 text-white mr-6">
+            <svg class="fill-current h-8 w-8 mr-2" width="54" height="54" viewBox="0 0 54 54"
+                 xmlns="http://www.w3.org/2000/svg">
+                <g style="" transform="matrix(1.154933, 0, 0, 1.151256, 4.1266, 1.861537)">
+                    <g stroke="null">
+                        <path d="M31.256 2.354a.674.674 0 00-.641-.64L20.61 1.237a.652.652 0 00-.508.196L.569 20.967a.672.672 0 000 .953L11.049 32.4a.672.672 0 00.954 0l19.533-19.533a.676.676 0 00.197-.509l-.477-10.005zm-19.73 28.618l-9.528-9.528L20.844 2.596l9.096.434.433 9.095-18.847 18.846z"/>
+                        <path d="M16.875 11.013L6.49 21.398l-.953-.952L15.923 10.06l.952.953zm2.72 2.045L9.209 23.444l-.953-.953 10.386-10.385.953.952zm-.313 5.077l-7.354 7.353-.953-.953 7.354-7.353.953.953zM22.007 7.15c-.508.51-.789 1.187-.789 1.906s.28 1.397.79 1.906c.509.51 1.185.79 1.905.79s1.397-.28 1.906-.79c.509-.509.79-1.185.79-1.906 0-.72-.28-1.396-.79-1.905-1.018-1.019-2.794-1.019-3.812 0zm2.86 2.859c-.51.51-1.398.51-1.907 0-.254-.255-.394-.593-.394-.953s.14-.698.394-.952c.255-.255.593-.395.953-.395s.698.14.953.395.395.592.395.952-.14.698-.395.953z"/>
+                    </g>
+                    <path d="M32.02 16.72L17.51 31.314l-.954-.952 14.572-14.654.893 1.012zm2.243 2.402L20.231 33.357l-.954-.952 1.946-1.95L33.369 18.29l.894.832zm-3.965 8.914l-7.346 7.362-.954-.952 7.346-7.361.954.95z"
+                          stroke="null"/>
+                </g>
+            </svg>
+            <span class="font-semibold text-xl tracking-tight">Tagger</span>
+        </div>
+        <router-link to="/" class="text-sm text-white">Overview</router-link>
+        <dropdown :services="computeServices" name="Compute"></dropdown>
+        <dropdown :services="dataServices" name="Data"></dropdown>
+        <dropdown :services="managementServices" name="Management"></dropdown>
+        <dropdown :services="messagingServices" name="Messaging"></dropdown>
+        <dropdown :services="networkingServices" name="Networking"></dropdown>
+    </nav>
+    <div class="h-8 w-full"></div>
+    <router-view></router-view>
+</div>
+</body>
+</html>
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+<script>
+    const resourcesByService = {{resources_by_service | tojson}}
+    const Collapsable = {
+        data() {
+            return {
+                isOpen: false,
+                colorOldTagKey: {
+                    'EXISTING': 'text-black-500',
+                    'EXISTING_NOT_IN_SCHEMA': "text-gray-300",
+                    'NEW': '',
+                    'NEW_VALUE': 'text-black-500'
+                },
+                colorOldTagValue: {
+                    'EXISTING': 'text-black-500',
+                    'EXISTING_NOT_IN_SCHEMA': "text-gray-300",
+                    'NEW': '',
+                    'NEW_VALUE': 'text-orange-500'
+                },
+                colorNewTagKey: {
+                    'EXISTING': 'text-black-500',
+                    'EXISTING_NOT_IN_SCHEMA': "text-gray-300",
+                    'NEW': 'text-green-500',
+                    'NEW_VALUE': 'text-black-500'
+                },
+                colorNewTagValue: {
+                    'EXISTING': 'text-black-500',
+                    'EXISTING_NOT_IN_SCHEMA': "text-gray-300",
+                    'NEW': 'text-green-500',
+                    'NEW_VALUE': 'text-green-500'
+                }
+            }
+        },
+        template: `
+            <div @click="isOpen = !isOpen"
+                 class="border-r border-b border-l border-t border-gray-400 lg:border-gray-400 bg-white rounded-b lg:rounded-r p-4 flex flex-col justify-between  leading-normal">
+                <div class="flex">
+                    <div class="w-1/3 flex">
+                        <svg v-if="!resourceWithDiffs.properly_tagged" class="fill-current h-6 w-6 mr-2 text-orange-500"
+                             xmlns="http://www.w3.org/2000/svg">
+                            <path d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM9 5h2v6H9V5zm0 8h2v2H9v-2z"/>
+                        </svg>
+                        <svg v-else class="h-6 w-6 mr-2 text-green-500 fill-current" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM6.7 9.29L9 11.6l4.3-4.3 1.4 1.42L9 14.4l-3.7-3.7 1.4-1.42z"/>
+                        </svg>
+                    </div>
+                    <div class="w-1/3 text-gray-600 text-center text-base font-semibold">
+                        <% resourceWithDiffs.resource.resource_type | toUpper %>: <% resourceWithDiffs.resource.name ? resourceWithDiffs.resource.name : resourceWithDiffs.resource.id %>
+                    </div>
+                    <div class="w-1/3 flex justify-end">
+                        <svg v-if="!isOpen" class="h-6 w-6 mr-2 text-gray-700 fill-current"
+                             xmlns="http://www.w3.org/2000/svg">
+                            <path d="M11 9h4v2h-4v4H9v-4H5V9h4V5h2v4zm-1 11a10 10 0 1 1 0-20 10 10 0 0 1 0 20zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16z"/>
+                        </svg>
+                        <svg v-if="isOpen" class="h-6 w-6 mr-2 text-gray-700 fill-current"
+                             xmlns="http://www.w3.org/2000/svg">
+                            <path d="M10 20a10 10 0 1 1 0-20 10 10 0 0 1 0 20zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm5-9v2H5V9h10z"/>
+                        </svg>
+                    </div>
+                </div>
+                <div v-if="isOpen">
+                    <div class="text-gray-600 text-center text-small">
+                        <% resourceWithDiffs.resource.arn %>
+                    </div>
+                    <div class="flex flex-fill justify-evenly mt-8">
+                        <div class="flex-col w-1/3">
+                            <div v-for="diff in resourceWithDiffs.tag_diffs" :key="diff.old_tag.key">
+                                <div class="flex">
+                                    <div v-bind:class="[colorOldTagKey[diff.diff_type]]" class="font-semibold"><%diff.old_tag.key ? diff.old_tag.key + ':&nbsp' : ''
+                                        %>
+                                    </div>
+                                    <div v-bind:class="[colorOldTagValue[diff.diff_type]]"> <%diff.old_tag.value ?
+                                        diff.old_tag.value : '' %>
+                                    </div>
+                                    <br v-if="!diff.old_tag.key"/>
+                                </div>
+                                <br/>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-center w-1/3">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                                 class="w-32 h-32 text-gray-600 fill-current">
+                                <path d="M12.95 10.707l.707-.707L8 4.343 6.586 5.757 10.828 10l-4.242 4.243L8 15.657l4.95-4.95z"/>
+                            </svg>
+                        </div>
+                        <div class="w-1/3">
+                            <div class="flex-col">
+                                <div v-for="diff in resourceWithDiffs.tag_diffs" :key="diff.new_tag.key">
+                                    <div class="flex">
+                                        <div class="font-semibold"
+                                             v-bind:class="[colorNewTagKey[diff.diff_type]]">
+                                            <%diff.new_tag.key
+                                            ? diff.new_tag.key : diff.old_tag.key %>:&nbsp
+                                        </div>
+                                        <div v-bind:class="[colorNewTagValue[diff.diff_type]]"><%diff.new_tag.value ?
+                                            diff.new_tag.value : diff.old_tag.value %>
+                                        </div>
+                                    </div>
+                                    <br/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `,
+        delimiters: ['<%', '%>'], props: ['resourceWithDiffs'],
+        filters: {
+            toUpper(value) {
+                return value.toUpperCase()
+            }
+        }
+    }
+    const Dropdown = {
+        data() {
+            return {
+                isOpen: false
+            }
+        },
+        created() {
+            const handleEscape = (e) => {
+                if (e.key === 'Esc' || e.key === 'Escape') {
+                    this.isOpen = false
+                }
+            }
+            const handleClickOutside = (e) => {
+                if (e.type === 'mousedown' && e.target.hash == null) {
+                    this.isOpen = false
+                }
+            }
+            document.addEventListener('keydown', handleEscape)
+            this.$once('hook:beforeDestroy', () => {
+                document.removeEventListener('keydown', handleEscape)
+            })
+            document.addEventListener('mousedown', handleClickOutside)
+            this.$once('hook:beforeDestroy', () => {
+                document.removeEventListener('mousedown', handleClickOutside)
+            })
+        },        template: `
+            <div class="relative text-sm">
+                <button @click="isOpen = !isOpen"
+                        class="flex items-center block text-white focus:outline-none focus:border-white">
+                    <label><%name%></label>
+                    <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                         stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </button>
+                <div v-if="isOpen" class="absolute right-0 mt-2 py-2 w-48 bg-white rounded-lg shadow-xl z-50">
+                    <router-link v-on:click.native="isOpen = false" v-for="service in services" :to="service"
+                                 :key="service"
+                                 class="block px-4 py-2 text-gray-800 hover:bg-green-400 hover:text-white"><% service %>
+                    </router-link>
+                </div>
+            </div>`,
+        delimiters: ['<%', '%>'], props: ['services', 'name']
+    }
+
+    const SelectDropdown = {
+        data() {
+            return {
+                selected: this.selectedOptions,
+                isOpen: false
+            }
+        },
+        created() {
+            const handleEscape = (e) => {
+                if (e.key === 'Esc' || e.key === 'Escape') {
+                    this.isOpen = false
+                }
+            }
+            const handleClickOutside = (e) => {
+                let targetElement = e.target;
+                do {
+                    if (this.options.includes(targetElement.id)) {
+                        return;
+                    }
+                    targetElement = targetElement.parentNode;
+                } while (targetElement);
+                // clicked outside, close dropdown
+                this.isOpen = false
+            }
+            document.addEventListener('keydown', handleEscape)
+            this.$once('hook:beforeDestroy', () => {
+                document.removeEventListener('keydown', handleEscape)
+            })
+            document.addEventListener('mousedown', handleClickOutside)
+            this.$once('hook:beforeDestroy', () => {
+                document.removeEventListener('mousedown', handleClickOutside)
+            })
+        },
+        watch: {
+            selectedOptions: function (newOptions) {
+                this.selected = newOptions
+            }
+        },
+        methods: {
+            toggleOption(e) {
+                const option = this.findClickedOption(e)
+                if (this.selected.includes(option)) {
+                    this.selected = this.selected.filter(existingOption => existingOption !== option)
+                } else {
+                    this.selected = this.selected.concat(option)
+                }
+                this.$emit('changed', this.selected)
+            },
+            findClickedOption(e) {
+                let targetElement = e.target;
+                do {
+                    if (this.options.includes(targetElement.id)) {
+                        return targetElement.id;
+                    }
+                    targetElement = targetElement.parentNode;
+                } while (targetElement);
+            }
+        },
+        template: `
+            <div class="w-full md:w-1/5 lg:w-1/6">
+                <div class="relative text-sm">
+                    <button @click="isOpen = !isOpen"
+                            class="flex items-center block text-black focus:outline-none focus:border-white">
+                        <label><%label%></label>
+                        <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                             stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </button>
+                    <div id="option-menu" v-if="isOpen"
+                         class="absolute right-0 mt-2 py-2 w-48 bg-white rounded-lg shadow-xl z-50">
+                        <div v-on:click="toggleOption" v-for="option in options" :key="option" :id="option"
+                             class="border-green-500 block px-4 py-2 text-gray-800 hover:bg-green-400 hover:text-white"
+                             v-bind:class="selected.includes(option) ? 'border-l-4' : ''">
+                            <div class="flex items-center justify-between">
+                                <div><% option %></div>
+                                <svg v-if="selected.includes(option)" xmlns="http://www.w3.org/2000/svg"
+                                     viewBox="0 0 20 20" class="h-3 w-3 text-grey-600 fill-current">
+                                    <path d="M0 11l2-2 5 5L18 3l2 2L7 18z"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>`,
+        delimiters: ['<%', '%>'], props: ['options', 'label', 'selectedOptions']
+    }
+
+    const Overview = {
+        data() {
+            return {
+                RATIO_OF_PROPERLY_TAGGED_RESOURCES_THRESHOLD: 1
+            }
+        },
+        template: `
+            <div class="container mx-auto">
+                <div>
+                    <h1 class="text-center font-semibold text-2xl whitespace-normal">
+                        Account ID {{account_id}}
+                    </h1>
+                    <h1 class="text-center text-lg font-medium">
+                        Created at {{creation_datetime}}
+                    </h1>
+                </div>
+                <div class="h-4 w-full"></div>
+                <table class="table-fixed fill-current w-full h-full">
+                    <thead>
+                    <tr>
+                        <th class="px-4 py-2">Service</th>
+                        <th class="px-4 py-2">Number of resources found</th>
+                        <th class="px-4 py-2">Number of resources tagged properly</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for service, metrics in metrics_by_service.items() %}
+                    <tr onclick="app.navigateTo('{{service}}')">
+                        <td class="border px-4 py-2">
+                            <div class="flex">
+                                <svg v-if="{{metrics['ratio_tagged_properly']}} >= RATIO_OF_PROPERLY_TAGGED_RESOURCES_THRESHOLD"
+                                     class="h-6 w-6 mr-2 text-green-500" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM6.7 9.29L9 11.6l4.3-4.3 1.4 1.42L9 14.4l-3.7-3.7 1.4-1.42z"/>
+                                </svg>
+                                <svg v-else class="fill-current h-6 w-6 mr-2 text-orange-500"
+                                     xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM9 5h2v6H9V5zm0 8h2v2H9v-2z"/>
+                                </svg>
+                                <p>{{service}}</p>
+                            </div>
+                        </td>
+                        <td class="border px-4 py-2">{{metrics['number_of_resources']}}</td>
+                        <td class="border px-4 py-2">{{metrics['number_of_resources_tagged_properly']}}</td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>`,
+        delimiters: ['<%', '%>']
+    }
+    const taggingStatusChoices = ["Tagged properly", "Tagged improperly"]
+    const ServiceDetail = {
+        components: {
+            'dropdown': Dropdown,
+            'collapsable': Collapsable,
+            'selectDropdown': SelectDropdown
+        },
+        beforeRouteUpdate(to, from, next) {
+            for (let child of this.$children) {
+                child.isOpen = false
+            }
+            this.selectedTypes = []
+            next()
+        },
+        data() {
+            return {
+                selectedTypes: this.resourcesWithTagDiffs ? [...new Set(this.resourcesWithTagDiffs
+                    .map(resourceWithTagDiff => resourceWithTagDiff.resource.resource_type))] : [],
+                taggingStatus: taggingStatusChoices,
+                selectedTaggingStatus: taggingStatusChoices
+            }
+        },
+        computed: {
+            resourceTypes: function () {
+                if (this.noResources) {
+                    return []
+                }
+                return [...new Set(this.resourcesWithTagDiffs.map(resourceWithTagDiff => resourceWithTagDiff.resource.resource_type))];
+            },
+            filteredResources: function () {
+                if (this.noResources) {
+                    return []
+                }
+                const filteredByType = this.resourcesWithTagDiffs.filter(resourceWithTagDiff => this.selectedTypes.includes(resourceWithTagDiff.resource.resource_type))
+                if (this.taggingStatus.length === this.selectedTaggingStatus.length ) {
+                    return filteredByType
+                } else if ( this.selectedTaggingStatus.length === 0) {
+                    return []
+                } else {
+                    if (this.selectedTaggingStatus) {
+                        if (this.selectedTaggingStatus[0] === "Tagged properly") {
+                            return filteredByType.filter(resourceWithTagDiff => resourceWithTagDiff.properly_tagged === true)
+                        } else {
+                            return filteredByType.filter(resourceWithTagDiff => resourceWithTagDiff.properly_tagged === false)
+                        }
+
+                    }
+                }
+            },
+            noResources: function () {
+                return this.resourcesWithTagDiffs === undefined || this.resourcesWithTagDiffs === null
+            }
+        },
+        watch: {
+            resourceTypes: function (types) {
+                this.selectedTypes = types
+                this.selectedTaggingStatus = taggingStatusChoices
+            }
+        },
+        methods: {
+            updateSelectedTypes: function (e) {
+                this.selectedTypes = e
+            },
+            updateTaggingStatus: function (e) {
+                this.selectedTaggingStatus = e
+            }
+        },
+        template: `
+            <div class="container mx-auto">
+                <div>
+                    <h1 class="text-center text-gray-800 font-semibold text-2xl whitespace-normal">
+                        <% $route.params.name%>
+                    </h1>
+                    <div v-if="!noResources" class="flex items-center">
+                        <select-dropdown v-on:changed="updateSelectedTypes($event)" :options="resourceTypes" :selectedOptions="selectedTypes"
+                                         label="Filter type"></select-dropdown>
+                        <select-dropdown v-on:changed="updateTaggingStatus($event)" :options="taggingStatus" :selectedOptions="selectedTaggingStatus"
+                                         label="Filter tagging status"></select-dropdown>
+                    </div>
+                </div>
+                <div class="h-4 w-2/3"></div>
+                <div>
+                    <collapsable v-for="resource in filteredResources" :resourceWithDiffs="resource"
+                                 :key="resource.arn">
+                    </collapsable>
+                    <div v-if="noResources">No resources found</div>
+                </div>
+            </div>`,
+        delimiters: ['<%', '%>'], props: ['resourcesWithTagDiffs']
+    }
+
+    const routes = [
+        {
+            path: '/:name',
+            component: ServiceDetail,
+            props: (route) => ({'resourcesWithTagDiffs': resourcesByService[route.params.name]})
+        },
+        {path: '/', component: Overview}
+    ]
+
+    const router = new VueRouter({
+        routes
+    })
+    const app = new Vue({
+        router,
+        data: {
+            computeServices: ['elasticbeanstalk', 'elasticloadbalancing', 'ec2', 'lambda'],
+            dataServices: ['elasticache', 'es', 'dynamodb', 'firehose', 'kinesis', 'rds', 's3'],
+            managementServices: ['acm', 'cloudtrail', 'cloudwatch', 'iam', 'logs'],
+            messagingServices: ['sns', 'sqs'],
+            networkingServices: ['apigateway', 'cloudfront', 'route53']
+        },
+        methods: {
+            navigateTo(destination) {
+                router.push({path: `/${destination}`})
+            }
+        },
+        components: {
+            'dropdown': Dropdown
+        }
+    }).$mount('#app');
+</script>

@@ -1,0 +1,5 @@
+.tox
+taggercli.egg-info
+.coverage
+config.ini
+taggercli.iml
