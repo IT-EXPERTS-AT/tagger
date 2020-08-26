@@ -26,13 +26,12 @@ from datetime import datetime, timezone
 from taggercore.model import Resource, TagDiffType, Tag, TagDiff, ResourceWithTagDiffs
 from typer.testing import CliRunner
 
-from config import Config
-from main import cli
 from taggercli.commands import (
     metrics_for_dashboard_by_service,
     prepare_data_for_dashboard_template,
 )
-from taggercli.config import set_config
+from taggercli.config import Config
+from taggercli.main import cli
 
 diff_for_improperly_tagged_resource = [
     TagDiff(
@@ -230,7 +229,7 @@ class TestReport:
             [Tag("Owner", "Fritz"), Tag("Project", "CRM")], default_region="eu-west-1"
         )
         mocker.patch(
-            "taggercli.commands.report.create_report",
+            "taggercli.commands.report.scan_and_compare_resources",
             return_value=resources_with_tag_diffs,
         )
         mocker.patch("taggercli.commands.report.init_config")

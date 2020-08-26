@@ -31,7 +31,7 @@ from itertools import groupby
 from jinja2 import Environment, FileSystemLoader
 from rich.console import Console
 from taggercore.model import ResourceWithTagDiffs, Tag
-from taggercore.usecase import create_report
+from taggercore.usecase import scan_and_compare_resources
 
 from taggercli.commands.util import print_tags
 from taggercli.config import get_config, init_config
@@ -61,7 +61,7 @@ def create_report_from_cli(
     if not tags:
         console.print("No Tags found. Please specify them in your config file")
     print_tags(console, "Creating report with the following tags", tags)
-    resources_with_diffs = create_report(region, tags)
+    resources_with_diffs = scan_and_compare_resources(region, tags)
     console.print("Scanning completed")
     console.print(f"Found {len(resources_with_diffs)} resources")
     dashboard_data = prepare_data_for_dashboard_template(
