@@ -62,7 +62,7 @@ def tag_all(region: Optional[str] = typer.Option(None, help="")):
 
 
 def show_detailed_tables(
-        region: str, regional_resources: List[Resource], global_resources: List[Resource]
+    region: str, regional_resources: List[Resource], global_resources: List[Resource]
 ) -> None:
     regional_table = create_table(f"Resource in region {region}", regional_resources)
     global_table = create_table("Global resources", global_resources)
@@ -95,6 +95,8 @@ def print_tagging_result(tagging_result: TaggingResult) -> None:
     console.print(
         f"Tagged [green]{len(tagging_result.successful_arns)}[/green] resources successfully"
     )
-    console.print(f"Failed to tag [default]{len(tagging_result.failed_arns)}[/default] resources")
+    console.print(
+        f"Failed to tag [default]{len(tagging_result.failed_arns)}[/default] resources"
+    )
     for failed_resource, error_msg in tagging_result.failed_arns.items():
         console.print(f"Resource {failed_resource}: [red]{error_msg}[/red]")

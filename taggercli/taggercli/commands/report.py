@@ -47,6 +47,7 @@ TEMPLATE_FILE_NAME = "template_report.html"
 REPORT_FILE_NAME = "report.html"
 tags = [Tag("Project", "CRM"), Tag("Owner", "Alice"), Tag("Cost-center", "Sales")]
 
+
 @report_group.command("create")
 def create_report_from_cli(
     region: Optional[str] = typer.Option(None, help=""),
