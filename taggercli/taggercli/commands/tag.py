@@ -39,7 +39,7 @@ tag_group = typer.Typer()
 
 
 @tag_group.command("all")
-def tag_all(region: Optional[str] = typer.Option(None, help="")):
+def tag_all(region: Optional[str] = typer.Option(None, help="AWS region code")):
     init_config()
     config = get_config()
     if region is None:
