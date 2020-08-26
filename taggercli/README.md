@@ -17,12 +17,14 @@ The main commands are
 
 The `report create` command first scans your AWS account (specified in your configuration, see *Configuration* for more information)
 and compares the tags of found resources with tags specified in your configuration file. A html report is generated showing the results from the comparison.  
-Please see the taggercore [README](../taggercore/README.md) for a list of supported resources.
+If no region is specified via `--region` the default from the configuration file is used.
 
 ### Tag all
 The `tag all` command first scans a given AWS region and your global resources.
-It displays a list of all the found resources and applies tags found in the configuration file.
+It displays a list of all the found resources and applies tags found in the configuration file.  
+If no region is specified via `--region` the default from the configuration file is used.
 
+### Supported resources
 Please see the taggercore [README](../taggercore/README.md) for a list of supported resources.
  
 
