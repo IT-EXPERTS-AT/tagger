@@ -39,10 +39,8 @@ from taggercli.config import get_config, init_config
 console = Console()
 
 report_group = typer.Typer()
-TEMPLATE_PATH = (
-    find_spec("taggercli.commands").origin.replace("commands/__init__.py", "", 1)
-    + "templates/"
-)
+TAGGERCLI_DIR = Path(find_spec("taggercli").origin).parent
+TEMPLATE_PATH = TAGGERCLI_DIR.joinpath("templates")
 TEMPLATE_FILE_NAME = "template_report.html"
 REPORT_FILE_NAME = "report.html"
 tags = [Tag("Project", "CRM"), Tag("Owner", "Alice"), Tag("Cost-center", "Sales")]
