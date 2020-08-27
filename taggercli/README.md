@@ -1,4 +1,7 @@
 # Taggercli
+The taggercli helps with two main use cases:
+ - finding resources in your AWS account and compare it to a certain tagging schema (visualized in html report)
+ - applying a tagging schema to resources   
 ## Demo
 ### CLI
 ![Tagger Demo](tagger-demo.gif)
