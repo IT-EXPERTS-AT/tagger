@@ -48,10 +48,9 @@ class GlobalScanner:
         """
         all_scanned_resources = []
         for service in GLOBAL_SERVICES:
-            print("iterating")
             service_uri = "arn:aws:" + service + ":*:*:*/*"
             resources = skew.scan(service_uri)
-            print(f"scan {service_uri}")
+            logger.debug(f"Scanning {service_uri}")
             for resource in resources:
                 if resource.resourcetype in resource_types_to_exclude:
                     continue
