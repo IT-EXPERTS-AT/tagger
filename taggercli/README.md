@@ -6,7 +6,7 @@
 [Report Demo](https://do9f59b42yfy1.cloudfront.net/#/)
 ## Installation
 
-**Current version**
+**Latest commit**
 
 `pip install git+https://github.com/IT-EXPERTS-AT/tagger.git#egg=taggercli&subdirectory=taggercli`
 

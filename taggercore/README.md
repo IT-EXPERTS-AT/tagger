@@ -55,7 +55,7 @@ Resources supported (scanning + tagging)
 |	sqs.queue	|
 ## Installation
 
-**Current version**
+**Latest commit**
 
 `pip install git+https://github.com/IT-EXPERTS-AT/tagger.git#egg=taggercore&subdirectory=taggercore`
 
