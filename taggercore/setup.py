@@ -21,13 +21,17 @@
 # specific language governing permissions and limitations
 # under the License.
 #
+import pathlib
 from distutils.core import setup
 
 from setuptools import find_packages
 
+CURRENT_DIR = pathlib.Path(__file__).parent
+README = (CURRENT_DIR / "README.md").read_text()
+
 setup(
     name="taggercore",
-    version="0.1.0",
+    version="1.0.0",
     packages=find_packages(),
     install_requires=["skew @ git+https://github.com/tobHai/skew.git#egg=skew"],
     extras_require={
@@ -39,9 +43,17 @@ setup(
           "black"
         ]
     },
-    url="",
+    url="https://github.com/IT-EXPERTS-AT/tagger",
     license="License :: OSI Approved :: Apache Software License",
     author="IT-experts",
     author_email="github@it-experts.at",
-    description="Provides utility classes for scanning AWS accounts and applying tags to AWS resources"
+    description="Provides utility classes for scanning AWS accounts and applying tags to AWS resources",
+    long_description=README,
+    long_description_content_type="text/markdown",
+    keywords=["AWS", "AWS tags", "CLI", "tags", "tag", "tagging", "AWS management"],
+    classifiers=[
+        "Operating System :: OS Independent",
+        "License :: OSI Approved :: Apache Software License",
+        "Programming Language :: Python :: 3.8"
+    ]
 )

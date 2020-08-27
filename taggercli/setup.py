@@ -21,14 +21,17 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-import os
+import pathlib
 from distutils.core import setup
 
 from setuptools import find_packages
 
+CURRENT_DIR = pathlib.Path(__file__).parent
+README = (CURRENT_DIR / "README.md").read_text()
+
 setup(
     name="taggercli",
-    version="0.1.0",
+    version="1.0.0",
     packages=find_packages(),
     install_requires=[
         "taggercore @ git+https://github.com/IT-EXPERTS-AT/tagger.git#egg=taggercore&subdirectory=taggercore",
@@ -45,14 +48,23 @@ setup(
             "black"
         ]
     },
-    url="",
-    license="",
+    url="https://github.com/IT-EXPERTS-AT/tagger",
+    license="License :: OSI Approved :: Apache Software License",
     author="IT-experts",
     author_email="github@it-experts.at",
-    description="",
+    description="CLI tool for analyzing AWS tagging schemas and applying them",
+    long_description=README,
+    long_description_content_type="text/markdown",
     entry_points="""
             [console_scripts]
             tagger=taggercli.main:cli
         """,
     include_package_data=True,
+    keywords=["AWS", "AWS tags", "CLI", "tags", "tag", "tagging", "AWS management"],
+    classifiers=[
+        "Operating System :: OS Independent",
+        "License :: OSI Approved :: Apache Software License",
+        "Programming Language :: Python :: 3.8"
+
+    ]
 )
