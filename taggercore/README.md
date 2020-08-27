@@ -3,7 +3,8 @@
 ## About
 Taggercore contains utility classes for scanning AWS resources and applying tags to them.
 The `usecase` package contains opinionated functions for performing tasks like scanning a region and global resources (e.g. IAM) or comparing resources to a certain tagging schema (e.g. `create_report.py`).
-
+## Python version
+Taggercore requires Python version 3.8 or higher
 ## Supported resources
 Resources supported (scanning + tagging)
 
@@ -53,8 +54,15 @@ Resources supported (scanning + tagging)
 |	s3.bucket	|
 |	sqs.queue	|
 ## Installation
-Taggercore can be installed by running  
-`pip install git+https://github.com/IT-EXPERTS-AT/tagger.git#egg=taggercore&subdirectory=taggercore`  
+
+**Current version**
+
+`pip install git+https://github.com/IT-EXPERTS-AT/tagger.git#egg=taggercore&subdirectory=taggercore`
+
+**Certain release**  
+E.g. v1.0.0  
+`pip install git+https://github.com/IT-EXPERTS-AT/tagger.git@v1.0.0#egg=taggercore&subdirectory=taggercore`  
+
 We are working on a PyPi release!
 ## Development
 

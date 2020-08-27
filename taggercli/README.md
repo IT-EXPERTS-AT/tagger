@@ -6,11 +6,15 @@
 [Report Demo](https://do9f59b42yfy1.cloudfront.net/#/)
 ## Installation
 
-The taggercli can be installed via pip.  
-Running  `pip install git+https://github.com/IT-EXPERTS-AT/tagger.git#egg=taggercli&subdirectory=taggercli` will install the CLI from sources.  
+**Current version**
+
+`pip install git+https://github.com/IT-EXPERTS-AT/tagger.git#egg=taggercli&subdirectory=taggercli`
+
+**Certain release**  
+E.g. v1.0.0  
+`pip install git+https://github.com/IT-EXPERTS-AT/tagger.git@v1.0.0#egg=taggercli&subdirectory=taggercli` 
+
 We are working on a PyPi release!
-
-
 ## Usage
 
 The main commands are   
@@ -34,6 +38,9 @@ Please see the taggercore [README](../taggercore/README.md) for a list of suppor
  
 
 ## Prerequisites
+### Python version
+
+Taggercli requires Python version 3.8 or higher
 ### Configuration
   
 `tagger config create` creates a config file and writes the result to `~/.tagger/config.ini`  
