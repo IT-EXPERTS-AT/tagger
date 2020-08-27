@@ -3,7 +3,7 @@
 ### CLI
 ![Tagger Demo](tagger-demo.gif)
 ### Report
-![Report Demo](http://taggercli.s3-website.eu-central-1.amazonaws.com/#/)
+[Report Demo](http://taggercli.s3-website.eu-central-1.amazonaws.com/#/)
 ## Installation
 
 The taggercli can be installed via pip.  
