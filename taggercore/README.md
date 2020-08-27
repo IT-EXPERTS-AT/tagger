@@ -54,8 +54,8 @@ Resources supported (scanning + tagging)
 |	sqs.queue	|
 ## Installation
 Taggercore can be installed by running  
-`pip install taggercore`
-
+`pip install git+https://github.com/IT-EXPERTS-AT/tagger.git#egg=taggercore&subdirectory=taggercore`  
+We are working on a PyPi release!
 ## Development
 
 Install dev dependencies:  

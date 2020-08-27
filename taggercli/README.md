@@ -7,7 +7,9 @@
 ## Installation
 
 The taggercli can be installed via pip.  
-Running  `pip install PLACEHOLDER PYPI NAME` will install the CLI
+Running  `pip install git+https://github.com/IT-EXPERTS-AT/tagger.git#egg=taggercli&subdirectory=taggercli` will install the CLI from sources.  
+We are working on a PyPi release!
+
 
 ## Usage
 
