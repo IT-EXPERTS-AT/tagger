@@ -11,11 +11,11 @@ The taggercli helps with two main use cases:
 
 **Latest commit**
 
-`pip install git+https://github.com/IT-EXPERTS-AT/tagger.git#egg=taggercli&subdirectory=taggercli`
+`pip install 'git+https://github.com/IT-EXPERTS-AT/tagger.git#egg=taggercli&subdirectory=taggercli'`
 
 **Certain release**  
 E.g. v1.0.0  
-`pip install git+https://github.com/IT-EXPERTS-AT/tagger.git@v1.0.0#egg=taggercli&subdirectory=taggercli` 
+`pip install 'git+https://github.com/IT-EXPERTS-AT/tagger.git@v1.0.0#egg=taggercli&subdirectory=taggercli'` 
 
 We are working on a PyPi release!
 ## Usage

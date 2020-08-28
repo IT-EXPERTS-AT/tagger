@@ -57,11 +57,11 @@ Resources supported (scanning + tagging)
 
 **Latest commit**
 
-`pip install git+https://github.com/IT-EXPERTS-AT/tagger.git#egg=taggercore&subdirectory=taggercore`
+`pip install 'git+https://github.com/IT-EXPERTS-AT/tagger.git#egg=taggercore&subdirectory=taggercore'`
 
 **Certain release**  
 E.g. v1.0.0  
-`pip install git+https://github.com/IT-EXPERTS-AT/tagger.git@v1.0.0#egg=taggercore&subdirectory=taggercore`  
+`pip install 'git+https://github.com/IT-EXPERTS-AT/tagger.git@v1.0.0#egg=taggercore&subdirectory=taggercore'`  
 
 We are working on a PyPi release!
 ## Development
