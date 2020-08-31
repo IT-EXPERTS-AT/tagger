@@ -1,10 +1,12 @@
 # Taggercli
+[![codecov](https://codecov.io/gh/IT-EXPERTS-AT/tagger/branch/master/graph/badge.svg?flag=taggercli)](https://codecov.io/gh/IT-EXPERTS-AT/tagger) ![build](https://github.com/IT-EXPERTS-AT/tagger/workflows/Cli/badge.svg)
+
 The taggercli helps with two main use cases:
  - finding resources in your AWS account and compare it to a certain tagging schema (visualized in html report)
  - applying a tagging schema to resources   
 ## Demo
 ### CLI
-![Tagger Demo](tagger-demo.gif)
+    #![Tagger Demo](tagger-demo.gif)
 ### Report
 [Report Demo](https://do9f59b42yfy1.cloudfront.net/#/)
 ## Installation
