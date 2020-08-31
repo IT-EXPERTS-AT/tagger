@@ -30,13 +30,15 @@ from taggercore.manipulation import (
 
 class TestArnManipulationStrategyFactory:
     def test_should_return_s3_strategy(self):
-        manipulation_strategy = ArnManipulationStrategyFactory.manipulation_strategy_for_service(
-            "s3"
+        manipulation_strategy = (
+            ArnManipulationStrategyFactory.manipulation_strategy_for_service("s3")
         )
         assert type(manipulation_strategy) == type(S3ArnManipulationStrategy)
 
     def test_should_return_no_arn_manipulation_strategy(self):
-        manipulation_strategy = ArnManipulationStrategyFactory.manipulation_strategy_for_service(
-            "cloudfront"
+        manipulation_strategy = (
+            ArnManipulationStrategyFactory.manipulation_strategy_for_service(
+                "cloudfront"
+            )
         )
         assert type(manipulation_strategy) == type(NoArnManipulationStrategy)

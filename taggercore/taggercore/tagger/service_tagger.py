@@ -50,7 +50,7 @@ class ServiceTagger(ABC):
 
     @staticmethod
     def init_session():
-        """ Creates a boto3 Session which can then used by a subclass to create a boto3 Client
+        """Creates a boto3 Session which can then used by a subclass to create a boto3 Client
         :raises TaggercoreConfigError
         :return: a boto3 Session
         """

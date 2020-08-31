@@ -31,10 +31,10 @@ from .credentials import Credentials
 
 class Config:
     def __init__(
-            self,
-            credentials: Credentials = None,
-            profile: str = None,
-            account_id: str = None,
+        self,
+        credentials: Credentials = None,
+        profile: str = None,
+        account_id: str = None,
     ):
         self._credentials = credentials
         self._profile = profile
@@ -62,7 +62,7 @@ def get_config() -> Config:
 
 
 def set_config(config_dict: Config):
-    """ Set global config for taggercore and keep it in sync with skew configuration
+    """Set global config for taggercore and keep it in sync with skew configuration
 
     Setting the skew config is required to ensure scanners are working properly
 
@@ -76,7 +76,7 @@ def set_config(config_dict: Config):
 
 
 def ensure_config_is_set(func: Callable):
-    """ Verifies that taggercore is configured
+    """Verifies that taggercore is configured
 
     :raises TaggercoreConfigError
     :param func: function which requires a config object
@@ -87,7 +87,8 @@ def ensure_config_is_set(func: Callable):
         config = get_config()
         if not config.profile and not config.account_id:
             raise TaggercoreConfigError(
-                f"No profile and no account id found. Please set the configuration before using {func}")
+                f"No profile and no account id found. Please set the configuration before using {func}"
+            )
         else:
             return func(*args)
 

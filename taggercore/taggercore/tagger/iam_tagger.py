@@ -34,7 +34,7 @@ logger = logging.getLogger(__name__)
 
 
 class IamTagger(ServiceTagger):
-    """ Tags IAM roles and users.
+    """Tags IAM roles and users.
 
     Roles and users cannot be tagged via Resource Groups Tagging API.
     They need to be tagged directly via the IAM client.

@@ -79,8 +79,10 @@ class RegionScanner:
 
     @staticmethod
     def manipulate_arn(resource: Resource) -> Resource:
-        arn_manipulation = ArnManipulationStrategyFactory.manipulation_strategy_for_service(
-            resource.service
+        arn_manipulation = (
+            ArnManipulationStrategyFactory.manipulation_strategy_for_service(
+                resource.service
+            )
         )
         resource.arn = arn_manipulation.manipulate_arn(arn=resource.arn)
         return resource

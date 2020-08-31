@@ -29,8 +29,10 @@ from taggercore.model import Tag, ResourceWithTagDiffs
 from taggercore.scanner import RegionScanner, GlobalScanner
 
 
-def scan_and_compare_resources(region: str, tags: List[Tag]) -> List[ResourceWithTagDiffs]:
-    """ Compares resources tags to given :param tags and creates a list of diffs
+def scan_and_compare_resources(
+    region: str, tags: List[Tag]
+) -> List[ResourceWithTagDiffs]:
+    """Compares resources tags to given :param tags and creates a list of diffs
 
     Scans resources in given :param region and global resources.
     Resources which are not taggable or currently not supported in the tagger classes are NOT returned.

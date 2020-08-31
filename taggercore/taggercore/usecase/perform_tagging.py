@@ -28,7 +28,7 @@ from taggercore.tagger import SuperTagger
 
 
 def perform_tagging(resources: List[Resource], tags: List[Tag]) -> TaggingResult:
-    """ Applies :param tags on :param resources
+    """Applies :param tags on :param resources
 
     :param resources: resources to tag
     :param tags: tags to apply on :param resources

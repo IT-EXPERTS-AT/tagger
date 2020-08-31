@@ -34,15 +34,7 @@ setup(
     version="1.0.0",
     packages=find_packages(),
     install_requires=["skew @ git+https://github.com/tobHai/skew.git#egg=skew"],
-    extras_require={
-      "dev": [
-          "pytest",
-          "tox",
-          "pytest-cov",
-          "pytest-mock",
-          "black"
-        ]
-    },
+    extras_require={"dev": ["pytest", "tox", "pytest-cov", "pytest-mock", "black"]},
     url="https://github.com/IT-EXPERTS-AT/tagger",
     license="License :: OSI Approved :: Apache Software License",
     author="IT-experts",
@@ -54,6 +46,6 @@ setup(
     classifiers=[
         "Operating System :: OS Independent",
         "License :: OSI Approved :: Apache Software License",
-        "Programming Language :: Python :: 3.8"
-    ]
+        "Programming Language :: Python :: 3.8",
+    ],
 )

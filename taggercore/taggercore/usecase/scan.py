@@ -33,7 +33,7 @@ from taggercore.tagger import (
 
 
 def scan_region(region: str) -> List[Resource]:
-    """ Scans resources in given :param region
+    """Scans resources in given :param region
 
     :param region: AWS region code (https://docs.aws.amazon.com/general/latest/gr/rande.html for a full list)
     :return: resources found in given :param region

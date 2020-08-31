@@ -33,14 +33,12 @@ logger = logging.getLogger(__name__)
 
 
 class RegionTagger(AbstractResourceGroupApiTagger):
-    """ Tags supported resources via Resource Groups Tagging API
-
-    """
+    """Tags supported resources via Resource Groups Tagging API"""
 
     def __init__(self, tags: List[Tag], resources_to_tag: List[Resource], region: str):
         """
-        
-        :param tags: tags to apply 
+
+        :param tags: tags to apply
         :param resources_to_tag: resources in specified :param region
         :param region: AWS region code (https://docs.aws.amazon.com/general/latest/gr/rande.html for a full list)
         """

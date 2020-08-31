@@ -68,7 +68,9 @@ def mock_scan(service: str):
 
 
 class TestGlobalScanner:
-    def test_global_scanner_with_config_set(self, mocker, account_and_profile_configured):
+    def test_global_scanner_with_config_set(
+        self, mocker, account_and_profile_configured
+    ):
         skew_scan = mocker.patch.object(scanner.global_scanner.skew, "scan")
         skew.scan.side_effect = mock_scan
 
@@ -109,5 +111,3 @@ class TestGlobalScanner:
         set_config(Config())
         with pytest.raises(TaggercoreConfigError):
             GlobalScanner().scan(GLOBAL_RES_TYPE_NOT_TAGGABLE)
-
-

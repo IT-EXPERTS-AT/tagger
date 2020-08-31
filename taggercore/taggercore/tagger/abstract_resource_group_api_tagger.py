@@ -37,7 +37,7 @@ logger = logging.getLogger(__name__)
 
 
 class AbstractResourceGroupApiTagger(ABC):
-    """ Groups shared functionality for tagging classes using the Resource Groups Tagging API
+    """Groups shared functionality for tagging classes using the Resource Groups Tagging API
 
     Subclasses need to implement their own init_client method
 

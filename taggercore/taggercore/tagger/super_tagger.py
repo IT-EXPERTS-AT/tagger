@@ -44,7 +44,7 @@ REG_RES_TYPE_NOT_SUPPORTED = ["stack", "environment"]
 
 
 class SuperTagger:
-    """ Delegates tagging to service, global and region tagger objects
+    """Delegates tagging to service, global and region tagger objects
 
     SuperTagger takes care of splitting resources into sublist which are then passed on to the fitting tagger class
 

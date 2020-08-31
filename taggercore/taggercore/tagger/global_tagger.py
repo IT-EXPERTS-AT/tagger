@@ -35,9 +35,7 @@ logger = logging.getLogger(__name__)
 
 
 class GlobalTagger(AbstractResourceGroupApiTagger):
-    """ Tags resources which use the global endpoint in 'us-east-1'
-
-    """
+    """Tags resources which use the global endpoint in 'us-east-1'"""
 
     def __init__(self, tags: List[Tag], resources_to_tag: List[Resource]):
         super().__init__(tags, resources_to_tag)
