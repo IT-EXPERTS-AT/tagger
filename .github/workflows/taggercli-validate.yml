@@ -26,5 +26,9 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install tox tox-gh-actions
+      - name: Validate style with black
+        uses: lgeiger/black-action@v1.0.1
+        with:
+          args: "taggercli --check"
       - name: Test with tox
         run: tox
