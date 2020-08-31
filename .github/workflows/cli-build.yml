@@ -1,4 +1,4 @@
-name: Cli
+name: Cli-build
 
 defaults:
   run:
