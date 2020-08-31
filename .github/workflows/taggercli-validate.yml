@@ -32,3 +32,11 @@ jobs:
           args: "taggercli --check"
       - name: Test with tox
         run: tox
+
+      - name: Upload to codecov
+        uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: taggercli/coverage.xml
+          flags: taggercli
+          fail_ci_if_error: true

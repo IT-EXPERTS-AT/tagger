@@ -1,0 +1,22 @@
+coverage:
+  status:
+    project:
+      taggercli:
+        target: auto
+        flags:
+          - taggercli
+      moduleB:
+        target: auto
+        flags:
+          - taggercore
+comment:
+  layout: "reach, diff, flags, files"
+  behavior: default
+  require_changes: false
+flags:
+  moduleA:
+    paths:
+      - taggercli
+  moduleB:
+    paths:
+      - taggercore
