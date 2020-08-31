@@ -49,7 +49,9 @@ tags = [Tag("Project", "CRM"), Tag("Owner", "Alice"), Tag("Cost-center", "Sales"
 @report_group.command("create")
 def create_report_from_cli(
     region: Optional[str] = typer.Option(None, help="AWS region code"),
-    output_path: Optional[str] = typer.Option(None, help="output path for the created html report"),
+    output_path: Optional[str] = typer.Option(
+        None, help="output path for the created html report"
+    ),
 ):
     init_config()
     config = get_config()

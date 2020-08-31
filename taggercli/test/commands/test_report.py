@@ -34,17 +34,13 @@ from taggercli.config import Config
 from taggercli.main import cli
 
 diff_for_improperly_tagged_resource = [
-    TagDiff(
-        Tag("Project", "CRM"), Tag("Project", "CRM"), TagDiffType["EXISTING"]
-    ),
+    TagDiff(Tag("Project", "CRM"), Tag("Project", "CRM"), TagDiffType["EXISTING"]),
     TagDiff(Tag("Owner", "Alice"), Tag("Owner", "Bob"), TagDiffType["NEW_VALUE"]),
     TagDiff(Tag(None, None), Tag("Department", "Marketing"), TagDiffType["NEW"]),
 ]
 
 diff_for_properly_tagged_resource = [
-    TagDiff(
-        Tag("Project", "CRM"), Tag("Project", "CRM"), TagDiffType["EXISTING"]
-    ),
+    TagDiff(Tag("Project", "CRM"), Tag("Project", "CRM"), TagDiffType["EXISTING"]),
     TagDiff(
         Tag("Created", "2020-08-10"),
         Tag(None, None),

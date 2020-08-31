@@ -37,17 +37,9 @@ setup(
         "taggercore @ git+https://github.com/IT-EXPERTS-AT/tagger.git#egg=taggercore&subdirectory=taggercore",
         "typer",
         "rich",
-        "jinja2"
+        "jinja2",
     ],
-    extras_require={
-        "dev": [
-            "pytest",
-            "tox",
-            "pytest-cov",
-            "pytest-mock",
-            "black"
-        ]
-    },
+    extras_require={"dev": ["pytest", "tox", "pytest-cov", "pytest-mock", "black"]},
     url="https://github.com/IT-EXPERTS-AT/tagger",
     license="License :: OSI Approved :: Apache Software License",
     author="IT-experts",
@@ -64,7 +56,6 @@ setup(
     classifiers=[
         "Operating System :: OS Independent",
         "License :: OSI Approved :: Apache Software License",
-        "Programming Language :: Python :: 3.8"
-
-    ]
+        "Programming Language :: Python :: 3.8",
+    ],
 )
