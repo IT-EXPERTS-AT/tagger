@@ -32,7 +32,7 @@ from taggercore.tagger import REG_RES_TYPE_NOT_TAGGABLE, REG_RES_TYPE_NOT_SUPPOR
 from test.stubs import ResourceStub
 
 
-def mock_scan(service: str):
+def mock_region_scan(service: str):
     if "apigateway" in service:
         return [
             ResourceStub(
@@ -64,7 +64,7 @@ class TestRegionScanner:
             GLOBAL_SERVICES
         )
         skew_scan = mocker.patch.object(scanner.region_scanner.skew, "scan")
-        skew.scan.side_effect = mock_scan
+        skew.scan.side_effect = mock_region_scan
 
         actual = RegionScanner("eu-central-1").scan(
             REG_RES_TYPE_NOT_SUPPORTED + REG_RES_TYPE_NOT_TAGGABLE

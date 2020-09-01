@@ -32,7 +32,7 @@ from taggercore.tagger import GLOBAL_RES_TYPE_NOT_TAGGABLE
 from test.stubs import ResourceStub
 
 
-def mock_scan(service: str):
+def mock_global_scan(service: str):
     if "route53" in service:
         return [
             ResourceStub(
@@ -72,7 +72,7 @@ class TestGlobalScanner:
         self, mocker, account_and_profile_configured
     ):
         skew_scan = mocker.patch.object(scanner.global_scanner.skew, "scan")
-        skew.scan.side_effect = mock_scan
+        skew.scan.side_effect = mock_global_scan
 
         actual = GlobalScanner().scan(GLOBAL_RES_TYPE_NOT_TAGGABLE)
 
