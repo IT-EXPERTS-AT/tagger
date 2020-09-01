@@ -5,7 +5,7 @@ coverage:
         target: auto
         flags:
           - taggercli
-      moduleB:
+      taggercore:
         target: auto
         flags:
           - taggercore
@@ -14,9 +14,9 @@ comment:
   behavior: default
   require_changes: false
 flags:
-  moduleA:
+  taggercli:
     paths:
       - taggercli
-  moduleB:
+  taggercore:
     paths:
       - taggercore
