@@ -29,42 +29,16 @@ from taggercore.config import TaggercoreConfigError, set_config, Config
 from taggercore.model import Resource
 from taggercore.scanner import RegionScanner, GLOBAL_SERVICES
 from taggercore.tagger import REG_RES_TYPE_NOT_TAGGABLE, REG_RES_TYPE_NOT_SUPPORTED
-from test.stubs import ResourceStub
-
-
-def mock_region_scan(service: str):
-    if "apigateway" in service:
-        return [
-            ResourceStub(
-                "arn:aws:sqs:eu-central-1:111111111111:someq",
-                "someq",
-                "queue",
-                {},
-                "queue-name",
-            )
-        ]
-    elif "cloudformation" in service:
-        return [
-            ResourceStub(
-                "arn:aws:cloudformation:eu-central-1:111111111111:stack/some-stack/b35ac3c0-912c-11ea-890f-02508c92de23",
-                "some-stack",
-                "stack",
-                {},
-                None,
-            )
-        ]
-    else:
-        return []
 
 
 class TestRegionScanner:
-    def test_scan(self, mocker, account_and_profile_configured):
+    def test_scan(self, mocker, account_and_profile_configured, region_scan):
         skew.set_config({"accounts": {"111111111111": {"profile": "profile-1"}}})
         number_of_supported_services = len(skew.ARN().service.choices()) - len(
             GLOBAL_SERVICES
         )
         skew_scan = mocker.patch.object(scanner.region_scanner.skew, "scan")
-        skew.scan.side_effect = mock_region_scan
+        skew.scan.side_effect = region_scan
 
         actual = RegionScanner("eu-central-1").scan(
             REG_RES_TYPE_NOT_SUPPORTED + REG_RES_TYPE_NOT_TAGGABLE

@@ -6,7 +6,7 @@ defaults:
 on:
   push:
     paths:
-      - 'taggercore/*'
+      - 'taggercore/**'
 
 jobs:
   build:

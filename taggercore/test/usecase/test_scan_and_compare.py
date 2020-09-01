@@ -26,21 +26,20 @@ from taggercore.tagger import GLOBAL_RES_TYPE_NOT_TAGGABLE
 from taggercore.model import Tag
 from taggercore.scanner import RegionScanner, GlobalScanner
 from taggercore.usecase import scan_and_compare_resources
-from test.stubs import regional_resources, global_resources
 
 
 class TestScanAndCompare:
-    def test_scan_and_compare(self, mocker):
+    def test_scan_and_compare(self, mocker, regional_resources, global_resources):
         mocked_region_scanner_scan = mocker.patch.object(RegionScanner, "scan")
-        mocked_region_scanner_scan.return_value = regional_resources()
+        mocked_region_scanner_scan.return_value = regional_resources
         mocked_global_scanner_scan = mocker.patch.object(GlobalScanner, "scan")
-        mocked_global_scanner_scan.return_value = global_resources()
+        mocked_global_scanner_scan.return_value = global_resources
 
         tags = [Tag("Owner", "Hugo"), Tag("Created", "2020-08-10")]
 
         actual = scan_and_compare_resources("eu-central-1", tags)
 
-        assert len(actual) == len(regional_resources()) + len(global_resources())
+        assert len(actual) == len(regional_resources) + len(global_resources)
         mocked_global_scanner_scan.assert_called_with(GLOBAL_RES_TYPE_NOT_TAGGABLE)
         mocked_region_scanner_scan.assert_called_with(
             REG_RES_TYPE_NOT_SUPPORTED + REG_RES_TYPE_NOT_TAGGABLE

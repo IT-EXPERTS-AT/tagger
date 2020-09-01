@@ -24,11 +24,10 @@
 from taggercore.model import TaggingResult
 from taggercore.tagger import SuperTagger, AbstractResourceGroupApiTagger, ServiceTagger
 from taggercore.usecase import perform_tagging
-from test.stubs import regional_resources, global_resources, tags
 
 
 class TestPerformTagging:
-    def test_perform_tagging(self, mocker):
+    def test_perform_tagging(self, mocker, regional_resources, global_resources, tags):
         mocker.patch.object(AbstractResourceGroupApiTagger, "init_session")
         mocker.patch.object(ServiceTagger, "init_session")
         expected_tagging_result = TaggingResult(
@@ -45,6 +44,6 @@ class TestPerformTagging:
 
         mocked_super_tagger_tag.return_value = expected_tagging_result
 
-        actual = perform_tagging(regional_resources() + global_resources(), tags())
+        actual = perform_tagging(regional_resources + global_resources, tags)
 
         assert actual == expected_tagging_result

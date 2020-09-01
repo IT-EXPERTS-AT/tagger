@@ -25,15 +25,10 @@ from unittest.mock import call
 
 from taggercore.model import TaggingResult
 from taggercore.tagger import RegionTagger, AbstractResourceGroupApiTagger
-from test.stubs.core_resource_stubs import (
-    tags,
-    regional_resources,
-    too_many_resources_for_single_boto_call,
-)
 
 
 class TestRegionTagger:
-    def test_tag_all_with_failed_resource(self, mocker):
+    def test_tag_all_with_failed_resource(self, mocker, tags, regional_resources):
         expected = [
             TaggingResult(
                 [
@@ -57,13 +52,13 @@ class TestRegionTagger:
         mocker.patch.object(AbstractResourceGroupApiTagger, "init_session")
         mocked_init_client = mocker.patch.object(RegionTagger, "init_client")
         mocked_init_client.return_value.tag_resources.return_value = tagging_response
-        region_tagger = RegionTagger(tags(), regional_resources(), "eu-central-1")
+        region_tagger = RegionTagger(tags, regional_resources, "eu-central-1")
 
         actual = region_tagger.tag_all()
 
         assert actual == expected
 
-    def test_tag_all_without_failed_resources(self, mocker):
+    def test_tag_all_without_failed_resources(self, mocker, tags, regional_resources):
         expected = [
             TaggingResult(
                 [
@@ -79,19 +74,21 @@ class TestRegionTagger:
         mocked_init_client = mocker.patch.object(RegionTagger, "init_client")
         mocked_init_client.return_value.tag_resources.return_value = tagging_response
 
-        region_tagger = RegionTagger(tags(), regional_resources(), "eu-central-1")
+        region_tagger = RegionTagger(tags, regional_resources, "eu-central-1")
         actual = region_tagger.tag_all()
 
         assert actual == expected
-        assert region_tagger.tags == tags()
-        assert region_tagger.resources_to_tag == regional_resources()
+        assert region_tagger.tags == tags
+        assert region_tagger.resources_to_tag == regional_resources
 
-    def test_should_split_resources(self, mocker):
-        expected_tags = {tag.key: tag.value for tag in tags()}
+    def test_should_split_resources(
+        self, mocker, tags, too_many_resources_for_single_boto_call
+    ):
+        expected_tags = {tag.key: tag.value for tag in tags}
         mocker.patch.object(AbstractResourceGroupApiTagger, "init_session")
         mocked_init_client = mocker.patch.object(RegionTagger, "init_client")
         tagger = RegionTagger(
-            tags(), too_many_resources_for_single_boto_call(), "eu-central-1"
+            tags, too_many_resources_for_single_boto_call, "eu-central-1"
         )
         tagger.tag_all()
 

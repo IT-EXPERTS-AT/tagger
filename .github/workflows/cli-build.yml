@@ -6,7 +6,7 @@ defaults:
 on:
   push:
     paths:
-      - 'taggercli/*'
+      - 'taggercli/**'
 
 jobs:
   build:
