@@ -16,7 +16,7 @@ comment:
 flags:
   taggercli:
     paths:
-      - taggercli
+      - taggercli/
   taggercore:
     paths:
-      - taggercore
+      - taggercore/
