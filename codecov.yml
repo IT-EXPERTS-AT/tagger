@@ -17,6 +17,8 @@ flags:
   taggercli:
     paths:
       - taggercli/
+    carryforward: true
   taggercore:
     paths:
       - taggercore/
+    carryforward: true
