@@ -23,6 +23,8 @@
 #
 from unittest.mock import call
 
+from botocore.exceptions import ClientError
+
 from taggercore.model import TaggingResult
 from taggercore.tagger import RegionTagger, AbstractResourceGroupApiTagger
 
@@ -130,3 +132,41 @@ class TestRegionTagger:
             ],
             any_order=True,
         )
+
+    def test_should_remove_failed_resource_and_retry(
+        self, mocker, tags, regional_resources_with_invalid_resource
+    ):
+        expected_tags = {tag.key: tag.value for tag in tags}
+        mocker.patch.object(AbstractResourceGroupApiTagger, "init_session")
+        mocked_init_client = mocker.patch.object(RegionTagger, "init_client")
+
+        mocked_init_client.return_value.tag_resources.side_effect = [
+            ClientError(
+                operation_name="tag_resources",
+                error_response={
+                    "Error": {
+                        "Code": "InvalidParameterException",
+                        "Message": "arn:aws:ec2:eu-central-1:111111111111:invalid is not a valid AmazonResourceName (ARN)",
+                    },
+                },
+            ),
+            {"FailedResourcesMap": {}},
+        ]
+
+        actual = RegionTagger(
+            tags, regional_resources_with_invalid_resource, "eu-central-1"
+        ).tag_all()
+
+        mocked_init_client.return_value.tag_resources.assert_called_with(
+            ResourceARNList=[
+                "arn:aws:sqs:eu-central-1:111111111111:someq",
+                "arn:aws:sqs:eu-central-1:111111111111:someq2",
+                "arn:aws:ec2:eu-central-1:111111111111:security-group/sg-b501f6d0",
+            ],
+            Tags=expected_tags,
+        )
+        assert len(actual[0].successful_arns) == 3
+        assert len(actual[0].failed_arns) == 1
+        assert actual[0].failed_arns == {
+            "arn:aws:ec2:eu-central-1:111111111111:invalid": "arn:aws:ec2:eu-central-1:111111111111:invalid is not a valid AmazonResourceName (ARN)"
+        }
