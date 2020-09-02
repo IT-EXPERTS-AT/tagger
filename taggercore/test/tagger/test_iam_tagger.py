@@ -21,6 +21,10 @@
 # specific language governing permissions and limitations
 # under the License.
 #
+import botocore
+import pytest
+
+from taggercore.config import TaggercoreConfigError
 from taggercore.model import TaggingResult
 from taggercore.tagger import IamTagger, ServiceTagger
 
@@ -37,21 +41,96 @@ class TestIamTagger:
 
         assert actual == expected
 
-    def test_tag_with_users(
-        self, mocker, account_and_profile_configured, iam_roles, tags
+    def test_tag_with_roles_and_user_succeeds(
+        self, mocker, account_and_profile_configured, iam_roles, iam_user, tags
     ):
         mocker.patch.object(ServiceTagger, "init_session")
         mocked_init_client = mocker.patch.object(IamTagger, "_init_client")
         mocked_init_client.return_value.tag_user.side_effect = ["Success", "Success"]
         mocked_init_client.return_value.tag_role.return_value = []
         expected = [
-            TaggingResult([], {}),
+            TaggingResult(
+                [
+                    "arn:aws:iam::111111111111:user/some-user",
+                    "arn:aws:iam::111111111111:user/another-user",
+                ],
+                {},
+            ),
             TaggingResult(
                 [
                     "arn:aws:iam::111111111111:role/some-role",
                     "arn:aws:iam::111111111111:role/another-role",
                 ],
                 {},
+            ),
+        ]
+
+        actual = IamTagger(iam_roles + iam_user, tags).tag_resources()
+
+        assert actual == expected
+
+    def test_tag_fails_without_config(self, iam_roles, tags):
+        with pytest.raises(TaggercoreConfigError):
+            IamTagger(iam_roles, tags).tag_resources()
+
+    def test_tag_users_fails_to_tag(
+        self, mocker, account_and_profile_configured, iam_user, tags
+    ):
+        mocker.patch.object(ServiceTagger, "init_session")
+        mocked_client = mocker.patch.object(IamTagger, "_init_client")
+        mocked_client.return_value.tag_user.side_effect = (
+            botocore.exceptions.ClientError(
+                operation_name="tag_user",
+                error_response={
+                    "Error": {
+                        "Code": "NoSuchEntityException",
+                        "Message": "The iam user doesnt exist",
+                    },
+                },
+            )
+        )
+        expected = [
+            TaggingResult(
+                [],
+                {
+                    "arn:aws:iam::111111111111:user/some-user": "The iam user doesnt exist",
+                    "arn:aws:iam::111111111111:user/another-user": "The iam user doesnt exist",
+                },
+            ),
+            TaggingResult([], {}),
+        ]
+
+        actual = IamTagger(iam_user, tags).tag_resources()
+
+        assert actual == expected
+
+    def test_tag_roles_fails_to_tag(
+        self, mocker, account_and_profile_configured, iam_roles, tags
+    ):
+        mocker.patch.object(ServiceTagger, "init_session")
+        mocked_client = mocker.patch.object(IamTagger, "_init_client")
+        mocked_client.return_value.tag_role.side_effect = (
+            botocore.exceptions.ClientError(
+                operation_name="tag_role",
+                error_response={
+                    "Error": {
+                        "Code": "NoSuchEntityException",
+                        "Message": "The iam role doesnt exist",
+                    },
+                },
+            )
+        )
+        expected = [
+            TaggingResult(
+                [],
+                {},
+            ),
+            TaggingResult(
+                [],
+                {
+                    "arn:aws:iam::111111111111:role/some-role": "The iam role doesnt exist",
+                    "arn:aws:iam::111111111111:role/another-role": "The iam role doesnt exist",
+                },
             ),
         ]
 

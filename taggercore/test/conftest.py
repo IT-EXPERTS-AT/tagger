@@ -38,9 +38,10 @@ class ResourceStub:
         self.name = name
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="function")
 def account_and_profile_configured():
-    set_config(Config(profile="another-profile", account_id="111111111111"))
+    yield set_config(Config(profile="another-profile", account_id="111111111111"))
+    set_config(Config())
 
 
 @pytest.fixture(scope="module")
@@ -131,6 +132,28 @@ def regional_resources(tags) -> List[Resource]:
         ),
         Resource(
             "arn:aws:ec2:eu-central-1:111111111111:security-group/sg-b501f6d0",
+            "sg-b501f6d0",
+            "security-group",
+            tags,
+        ),
+    ]
+
+
+@pytest.fixture(scope="module")
+def regional_resources_with_invalid_resource(tags) -> List[Resource]:
+    yield [
+        Resource("arn:aws:sqs:eu-central-1:111111111111:someq", "someq", "queue", tags),
+        Resource(
+            "arn:aws:sqs:eu-central-1:111111111111:someq2", "someq2", "queue", tags
+        ),
+        Resource(
+            "arn:aws:ec2:eu-central-1:111111111111:security-group/sg-b501f6d0",
+            "sg-b501f6d0",
+            "security-group",
+            tags,
+        ),
+        Resource(
+            "arn:aws:ec2:eu-central-1:111111111111:invalid",
             "sg-b501f6d0",
             "security-group",
             tags,
@@ -342,5 +365,15 @@ def iam_roles() -> List[Resource]:
         Resource("arn:aws:iam::111111111111:role/some-role", "some-role", "role", []),
         Resource(
             "arn:aws:iam::111111111111:role/another-role", "another-role", "role", []
+        ),
+    ]
+
+
+@pytest.fixture(scope="module")
+def iam_user() -> List[Resource]:
+    yield [
+        Resource("arn:aws:iam::111111111111:user/some-user", "some-user", "user", []),
+        Resource(
+            "arn:aws:iam::111111111111:user/another-user", "another-user", "user", []
         ),
     ]
