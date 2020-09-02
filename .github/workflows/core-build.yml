@@ -1,12 +1,12 @@
-name: Cli-build
+name: Core-build
 
 defaults:
   run:
-    working-directory: "taggercli"
+    working-directory: "taggercore"
 on:
   push:
     paths:
-      - 'taggercli/**'
+      - 'taggercore/**'
 
 jobs:
   build:
@@ -29,14 +29,13 @@ jobs:
       - name: Validate style with black
         uses: lgeiger/black-action@v1.0.1
         with:
-          args: "taggercli --check"
+          args: "taggercore --check"
       - name: Test with tox
         run: tox
-
       - name: Upload to codecov
         uses: codecov/codecov-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          file: taggercli/coverage.xml
-          flags: taggercli
+          file: taggercore/coverage.xml
+          flags: taggercore
           fail_ci_if_error: true

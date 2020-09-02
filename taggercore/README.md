@@ -1,5 +1,5 @@
 # Taggercore
-
+[![codecov](https://codecov.io/gh/IT-EXPERTS-AT/tagger/branch/master/graph/badge.svg?flag=taggercore)](https://codecov.io/gh/IT-EXPERTS-AT/tagger) ![build](https://github.com/IT-EXPERTS-AT/tagger/workflows/Core-build/badge.svg)
 ## About
 Taggercore contains utility classes for scanning AWS resources and applying tags to them.
 The `usecase` package contains opinionated functions for performing tasks like scanning a region and global resources (e.g. IAM) or comparing resources to a certain tagging schema (e.g. `create_report.py`).

@@ -22,19 +22,15 @@
 # under the License.
 #
 from taggercore.tagger import SuperTagger, AbstractResourceGroupApiTagger, ServiceTagger
-from test.stubs.core_resource_stubs import (
-    tags,
-    resources_from_two_regions,
-    iam_roles,
-    global_resources,
-)
 
 
 class TestSuperTagger:
-    def test_should_create_region_taggers(self, mocker, account_and_profile_configured):
+    def test_should_create_region_taggers(
+        self, mocker, account_and_profile_configured, resources_from_two_regions, tags
+    ):
         mocker.patch.object(AbstractResourceGroupApiTagger, "init_session")
         mocker.patch.object(ServiceTagger, "init_session")
-        tagger = SuperTagger(resources_from_two_regions(), tags())
+        tagger = SuperTagger(resources_from_two_regions, tags)
 
         assert len(tagger.region_taggers) == 2
         assert len(tagger.service_taggers) == 0
@@ -42,38 +38,51 @@ class TestSuperTagger:
         assert tagger.region_taggers[1].region == "eu-west-1"
         assert tagger.global_tagger.arns == []
 
-    def test_should_create_service_tagger(self, mocker, account_and_profile_configured):
+    def test_should_create_service_tagger(
+        self, mocker, account_and_profile_configured, iam_roles, tags
+    ):
         mocker.patch.object(AbstractResourceGroupApiTagger, "init_session")
         mocker.patch.object(ServiceTagger, "init_session")
-        tagger = SuperTagger(iam_roles(), tags())
+        tagger = SuperTagger(iam_roles, tags)
 
         assert len(tagger.service_taggers) == 1
         assert len(tagger.region_taggers) == 0
         assert tagger.global_tagger.arns == []
 
     def test_should_create_service_tagger_and_region_taggers(
-        self, mocker, account_and_profile_configured
+        self,
+        mocker,
+        account_and_profile_configured,
+        iam_roles,
+        resources_from_two_regions,
+        tags,
     ):
         mocker.patch.object(AbstractResourceGroupApiTagger, "init_session")
         mocker.patch.object(ServiceTagger, "init_session")
-        tagger = SuperTagger(iam_roles() + resources_from_two_regions(), tags())
+        tagger = SuperTagger(iam_roles + resources_from_two_regions, tags)
 
         assert len(tagger.service_taggers) == 1
-        assert tagger.service_taggers[0].resources == iam_roles()
+        assert tagger.service_taggers[0].resources == iam_roles
         assert len(tagger.region_taggers) == 2
         assert tagger.global_tagger.arns == []
 
     def test_should_create_service_tagger_and_region_taggers_and_global_tagger_with_arns(
-        self, mocker, account_and_profile_configured
+        self,
+        mocker,
+        account_and_profile_configured,
+        iam_roles,
+        resources_from_two_regions,
+        global_resources,
+        tags,
     ):
         mocker.patch.object(AbstractResourceGroupApiTagger, "init_session")
         mocker.patch.object(ServiceTagger, "init_session")
         tagger = SuperTagger(
-            iam_roles() + resources_from_two_regions() + global_resources(), tags()
+            iam_roles + resources_from_two_regions + global_resources, tags
         )
 
         assert len(tagger.service_taggers) == 1
         assert len(tagger.region_taggers) == 2
         assert tagger.global_tagger.arns == [
-            resource.arn for resource in global_resources()
+            resource.arn for resource in global_resources
         ]

@@ -23,32 +23,23 @@
 #
 from taggercore.scanner import RegionScanner, GlobalScanner
 from taggercore.usecase import scan_region, scan_region_and_global
-from test.stubs import regional_resources, global_resources
-
-
-def mocked_scan_region(resource_types_to_exclude):
-    return regional_resources()
-
-
-def mocked_scan_global(resource_types_to_exclude):
-    return global_resources()
 
 
 class TestScan:
-    def test_scan_region(self, mocker):
+    def test_scan_region(self, mocker, regional_resources):
         mocked_region_scanner_scan = mocker.patch.object(RegionScanner, "scan")
-        mocked_region_scanner_scan.side_effect = mocked_scan_region
+        mocked_region_scanner_scan.return_value = regional_resources
 
         actual = scan_region("eu-central-1")
-        assert actual == regional_resources()
+        assert actual == regional_resources
 
-    def test_scan_region_and_global(self, mocker):
+    def test_scan_region_and_global(self, mocker, regional_resources, global_resources):
         mocked_region_scanner_scan = mocker.patch.object(RegionScanner, "scan")
-        mocked_region_scanner_scan.side_effect = mocked_scan_region
+        mocked_region_scanner_scan.return_value = regional_resources
         mocked_global_scanner_scan = mocker.patch.object(GlobalScanner, "scan")
-        mocked_global_scanner_scan.side_effect = mocked_scan_global
+        mocked_global_scanner_scan.return_value = global_resources
 
         region = "eu-central-1"
         actual = scan_region_and_global(region)
-        assert actual[region] == regional_resources()
-        assert actual["global"] == global_resources()
+        assert actual[region] == regional_resources
+        assert actual["global"] == global_resources

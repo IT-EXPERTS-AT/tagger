@@ -29,50 +29,14 @@ from taggercore.config import TaggercoreConfigError, set_config, Config
 from taggercore.model import Resource
 from taggercore.scanner import GlobalScanner, GLOBAL_SERVICES
 from taggercore.tagger import GLOBAL_RES_TYPE_NOT_TAGGABLE
-from test.stubs import ResourceStub
-
-
-def mock_scan(service: str):
-    if "route53" in service:
-        return [
-            ResourceStub(
-                "arn:aws:route53::111111111111:healthcheck/f665452c-bf56-4a43-8b5d-319c3b8d0a70",
-                "f665452c-bf56-4a43-8b5d-319c3b8d0a70",
-                "healthcheck",
-                {},
-                None,
-            )
-        ]
-    elif "cloudfront" in service:
-        return [
-            ResourceStub(
-                "arn:aws:cloudfront::111111111111:distribution/EMS6KR7IENMDE",
-                "EMS6KR7IENMDE",
-                "distribution",
-                {},
-                "some-domain",
-            )
-        ]
-    elif "iam" in service:
-        return [
-            ResourceStub(
-                "arn:aws:iam::111111111111:role/some-role",
-                "some-role",
-                "role",
-                {},
-                "some-role",
-            )
-        ]
-    else:
-        return []
 
 
 class TestGlobalScanner:
     def test_global_scanner_with_config_set(
-        self, mocker, account_and_profile_configured
+        self, mocker, account_and_profile_configured, global_scan
     ):
         skew_scan = mocker.patch.object(scanner.global_scanner.skew, "scan")
-        skew.scan.side_effect = mock_scan
+        skew.scan.side_effect = global_scan
 
         actual = GlobalScanner().scan(GLOBAL_RES_TYPE_NOT_TAGGABLE)
 

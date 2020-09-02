@@ -22,18 +22,17 @@
 # under the License.
 #
 from taggercore.tagger import GlobalTagger, AbstractResourceGroupApiTagger
-from test.stubs.core_resource_stubs import tags, global_resources
 
 
 class TestGlobalTagger:
     def test_verify_correct_boto_client_call(
-        self, mocker, account_and_profile_configured
+        self, mocker, account_and_profile_configured, tags, global_resources
     ):
-        expected_tags = {tag.key: tag.value for tag in tags()}
+        expected_tags = {tag.key: tag.value for tag in tags}
         mocker.patch.object(AbstractResourceGroupApiTagger, "init_session")
         mocked_init_client = mocker.patch.object(GlobalTagger, "init_client")
 
-        GlobalTagger(tags(), global_resources()).tag_all()
+        GlobalTagger(tags, global_resources).tag_all()
 
         mocked_init_client.return_value.tag_resources.assert_called_with(
             ResourceARNList=[
