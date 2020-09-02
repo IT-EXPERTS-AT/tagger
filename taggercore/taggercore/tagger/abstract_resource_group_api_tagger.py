@@ -27,6 +27,7 @@ from typing import List, Dict, Any
 
 import boto3
 from botocore.client import BaseClient
+from botocore.exceptions import ClientError
 
 from taggercore.config import get_config, TaggercoreConfigError
 from taggercore.model import Tag, Resource, TaggingResult
@@ -98,30 +99,33 @@ class AbstractResourceGroupApiTagger(ABC):
         tags = {tag.key: tag.value for tag in self.tags}
         try:
             response = client.tag_resources(ResourceARNList=arn_list, Tags=tags)
-        except client.exceptions.InvalidParameterException as parameter_exception:
-            logger.error(parameter_exception)
-            failed_arn = self._extract_arn_from_error(parameter_exception)
-            logger.error(
-                "Resource {} is not taggable via ResourceTaggingAPI, filtering and retrying without it".format(
-                    failed_arn
-                )
-            )
-            arn_list.remove(failed_arn)
-            self._failed_arns[failed_arn] = parameter_exception
-            self._tag_arn_list(client, arn_list)
-            response = {}
-        except client.exceptions.ThrottledException as throttled_exception:
-            logger.error(throttled_exception)
-            time.sleep(30)
-            self._tag_arn_list(client, arn_list)
+        except ClientError as e:
+            error_code = e.response["Error"]["Code"]
+            if error_code == "InvalidParameterException":
+                self._handle_parameter_exception(e, client, arn_list)
+            else:
+                raise e
             response = {}
         except Exception as e:
-            logger.error(e)
-            response = {}
+            raise e
         return self._transform_response_to_tagging_result(arn_list, response)
 
-    def _extract_arn_from_error(self, exception) -> str:
-        return str(exception).split("operation: ")[1].split(" is")[0]
+    def _handle_parameter_exception(
+        self, error: ClientError, client: BaseClient, arn_list: List[str]
+    ):
+        error_msg = error.response["Error"]["Message"]
+        failed_arn = self._extract_arn_from_error(error_msg)
+        logger.error(
+            "Resource {} is not taggable via ResourceTaggingAPI, filtering and retrying without it".format(
+                failed_arn
+            )
+        )
+        arn_list.remove(failed_arn)
+        self._failed_arns[failed_arn] = error_msg
+        self._tag_arn_list(client, arn_list)
+
+    def _extract_arn_from_error(self, error_msg) -> str:
+        return error_msg.split(" is")[0]
 
     def _transform_response_to_tagging_result(
         self, list_of_arns: List[str], response: Dict[Any, Any]

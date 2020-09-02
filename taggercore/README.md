@@ -72,5 +72,7 @@ Install dev dependencies:
 Run tests:  
 `tox`
 
+Test fixtures are currently defined in `conftest.py`
+
 Run black for code formatting:  
 `tox -e format`
