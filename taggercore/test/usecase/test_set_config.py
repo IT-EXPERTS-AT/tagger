@@ -33,5 +33,9 @@ class TestConfig:
         configure_account_and_profile("111111111111", "some-profile")
 
         mocked_skew_config.assert_called_once_with(
-            {"accounts": {"111111111111": {"profile": "some-profile"}}}
+            {
+                "accounts": {
+                    "111111111111": {"profile": "some-profile", "credentials": None}
+                }
+            }
         )

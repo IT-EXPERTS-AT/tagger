@@ -70,7 +70,14 @@ def set_config(config_dict: Config):
     """
     global _config
     skew.set_config(
-        {"accounts": {config_dict.account_id: {"profile": config_dict.profile}}}
+        {
+            "accounts": {
+                config_dict.account_id: {
+                    "profile": config_dict.profile,
+                    "credentials": config_dict.credentials,
+                }
+            }
+        }
     )
     _config = config_dict
 
