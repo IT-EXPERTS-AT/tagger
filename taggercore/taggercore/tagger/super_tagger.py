@@ -32,7 +32,7 @@ logger = logging.getLogger(__name__)
 # Provides mapping between resource service and tagger class
 SERVICE_TAGGER = {"iam": IamTagger}
 
-GLOBAL_RES_TYPE_NOT_TAGGABLE = ["policy"]
+GLOBAL_RES_TYPE_NOT_TAGGABLE = ["policy", "instance-profile"]
 REG_RES_TYPE_NOT_TAGGABLE = [
     "autoScalingGroup",
     "launchConfiguration",
