@@ -17,21 +17,21 @@ Resources:
             - Effect: Allow
               Action:
                 - sts:AssumeRole
-              Resource: 'YOUR_ACCOUNT_ROLE'
+              Resource: 'YOUR_ACCOUNT_ROLE_ARN'
         - Version: '2012-10-17' # Policy Document
           Statement:
             - Effect: Allow
               Action:
                 - sts:AssumeRole
-              Resource: 'YOUR_ORGA_ROLE'
+              Resource: 'YOUR_ORGA_ROLE_ARN'
       Timeout: 900
       MemorySize: 500
       Environment:
         Variables:
           TAG_MODE: 'ACCOUNT'
           ACCOUNT_ID: 'YOUR_ACCOUNT_ID'
-          ACCOUNT_ROLE: 'YOUR_ACCOUNT_ROLE'
-          ORGA_ROLE: 'YOUR_ORGA_ROLE'
+          ACCOUNT_ROLE: 'YOUR_ACCOUNT_ROLE_ARN'
+          ORGA_ROLE: 'YOUR_ORGA_ROLE_ARN'
           REGION: 'REGION'
 
 

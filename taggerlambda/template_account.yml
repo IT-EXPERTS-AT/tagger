@@ -1,0 +1,29 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Resources:
+  AccountTaggingLambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src.lambda.lambda_handler
+      Runtime: python3.8
+      Events:
+        SchedulingEvent:
+          Type: Schedule
+          Properties:
+            Schedule: rate(5 minutes)
+      Policies:
+        - Statement:
+            - Effect: Allow
+              Action:
+                - sts:AssumeRole
+              Resource: 'YOUR_ACCOUNT_ROLE_ARN'
+      Timeout: 900
+      MemorySize: 500
+      Environment:
+        Variables:
+          TAG_MODE: 'ENV'
+          ACCOUNT_ID: 'YOUR_ACCOUNT_ID'
+          ACCOUNT_ROLE: 'YOUR_ACCOUNT_ROLE_ARN'
+          REGION: 'REGION'
+
+

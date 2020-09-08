@@ -2,4 +2,5 @@
 Pipfile
 Pipfile.lock
 taggerlambda.iml
-template_prod.yml
+template_cross_acount_prod.yml
+template_account_prod.yml
