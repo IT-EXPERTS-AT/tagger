@@ -2,7 +2,6 @@ from typing import List
 
 import boto3
 import pytest
-import taggercore
 from botocore.exceptions import ClientError
 from taggercore.model import Resource, Tag, TaggingResult
 
@@ -60,7 +59,7 @@ def env_for_tag_mode_env(monkeypatch):
         "TAG_MODE": "ENV",
         "TAGS": "Project=Marketing, Owner=Team1",
         "REGION": "eu-central-1",
-        "ACCOUNT_ROLE": "arn:aws:iam::111111111111:role/some-role"
+        "ACCOUNT_ROLE": "arn:aws:iam::111111111111:role/some-role",
     }
     monkeypatch.setenv("ACCOUNT_ID", config["ACCOUNT_ID"])
     monkeypatch.setenv("TAG_MODE", config["TAG_MODE"])
@@ -89,7 +88,7 @@ def env_for_tag_mode_account(monkeypatch):
         "TAG_MODE": "ACCOUNT",
         "REGION": "eu-central-1",
         "ACCOUNT_ROLE": "arn:aws:iam::111111111111:role/some-role",
-        "ORGA_ROLE": "arn:aws:iam::222222222222:role/orga-role"
+        "ORGA_ROLE": "arn:aws:iam::222222222222:role/orga-role",
     }
     monkeypatch.setenv("ACCOUNT_ID", config["ACCOUNT_ID"])
     monkeypatch.setenv("TAG_MODE", config["TAG_MODE"])
@@ -107,15 +106,21 @@ def env_for_tag_mode_account_without_orga_role(monkeypatch, env_for_tag_mode_acc
 
 @pytest.fixture(scope="module")
 def tagging_result(regional_resources, global_resources) -> TaggingResult:
-    successful_arns = [resource.arn for resource in regional_resources] + [resource.arn for resource in
-                                                                           global_resources]
+    successful_arns = [resource.arn for resource in regional_resources] + [
+        resource.arn for resource in global_resources
+    ]
     yield TaggingResult(successful_arns, {})
 
 
 class TestLambda:
-
-    def test_lambda_in_tag_mode_env(self, mocker, env_for_tag_mode_env, regional_resources, global_resources,
-                                    tagging_result):
+    def test_lambda_in_tag_mode_env(
+        self,
+        mocker,
+        env_for_tag_mode_env,
+        regional_resources,
+        global_resources,
+        tagging_result,
+    ):
         mocked_region_scan = mocker.patch("src.tagging_lambda.scan_region")
         mocked_region_scan.return_value = regional_resources
 
@@ -127,7 +132,12 @@ class TestLambda:
 
         mocked_boto_client = mocker.patch.object(boto3, "client")
         mocked_boto_client.return_value.assume_role.return_value = {
-            "Credentials": {"AccessKeyId": "access_key", "SecretAccessKey": "secret_key", "SessionToken": "token1"}}
+            "Credentials": {
+                "AccessKeyId": "access_key",
+                "SecretAccessKey": "secret_key",
+                "SessionToken": "token1",
+            }
+        }
 
         lambda_handler(None, None)
 
@@ -135,9 +145,14 @@ class TestLambda:
         mocked_global_scan.assert_called_once()
         mocked_perform_tagging.assert_called_once()
 
-    def test_lambda_in_tag_mode_env_without_global_res(self, mocker, env_tag_mode_env_without_global_res,
-                                                       regional_resources, global_resources,
-                                                       tagging_result):
+    def test_lambda_in_tag_mode_env_without_global_res(
+        self,
+        mocker,
+        env_tag_mode_env_without_global_res,
+        regional_resources,
+        global_resources,
+        tagging_result,
+    ):
         mocked_region_scan = mocker.patch("src.tagging_lambda.scan_region")
         mocked_region_scan.return_value = regional_resources
 
@@ -149,11 +164,18 @@ class TestLambda:
 
         mocked_boto_client = mocker.patch.object(boto3, "client")
         mocked_boto_client.return_value.assume_role.return_value = {
-            "Credentials": {"AccessKeyId": "access_key", "SecretAccessKey": "secret_key", "SessionToken": "token1"}}
+            "Credentials": {
+                "AccessKeyId": "access_key",
+                "SecretAccessKey": "secret_key",
+                "SessionToken": "token1",
+            }
+        }
 
         lambda_handler(None, None)
 
-        mocked_region_scan.assert_called_once_with(env_tag_mode_env_without_global_res["REGION"])
+        mocked_region_scan.assert_called_once_with(
+            env_tag_mode_env_without_global_res["REGION"]
+        )
         mocked_global_scan.assert_not_called()
         mocked_perform_tagging.assert_called_once()
 
@@ -161,8 +183,14 @@ class TestLambda:
         with pytest.raises(ConfigurationError):
             lambda_handler(None, None)
 
-    def test_lambda_in_tag_mode_account(self, mocker, env_for_tag_mode_account, regional_resources, global_resources,
-                                        tagging_result):
+    def test_lambda_in_tag_mode_account(
+        self,
+        mocker,
+        env_for_tag_mode_account,
+        regional_resources,
+        global_resources,
+        tagging_result,
+    ):
         mocked_region_scan = mocker.patch("src.tagging_lambda.scan_region")
         mocked_region_scan.return_value = regional_resources
 
@@ -174,49 +202,69 @@ class TestLambda:
 
         mocked_boto_client = mocker.patch.object(boto3, "client")
         mocked_boto_client.return_value.assume_role.return_value = {
-            "Credentials": {"AccessKeyId": "access_key", "SecretAccessKey": "secret_key", "SessionToken": "token1"}}
-        mocked_list_tags_for_resource = mocked_boto_client.return_value.list_tags_for_resource
+            "Credentials": {
+                "AccessKeyId": "access_key",
+                "SecretAccessKey": "secret_key",
+                "SessionToken": "token1",
+            }
+        }
+        mocked_list_tags_for_resource = (
+            mocked_boto_client.return_value.list_tags_for_resource
+        )
         mocked_list_tags_for_resource.return_value = {
-            "Tags": [{"Key": "Project", "Value": "CRM"}, {"Key": "Owner", "Value": "Team2"}]}
+            "Tags": [
+                {"Key": "Project", "Value": "CRM"},
+                {"Key": "Owner", "Value": "Team2"},
+            ]
+        }
         expected_tags = [Tag("Project", "CRM"), Tag("Owner", "Team2")]
 
         lambda_handler(None, None)
 
-        mocked_list_tags_for_resource.assert_called_with(ResourceId=env_for_tag_mode_account["ACCOUNT_ID"])
+        mocked_list_tags_for_resource.assert_called_with(
+            ResourceId=env_for_tag_mode_account["ACCOUNT_ID"]
+        )
         mocked_region_scan.assert_called_once_with(env_for_tag_mode_account["REGION"])
         mocked_global_scan.assert_called_once()
-        mocked_perform_tagging.assert_called_once_with(regional_resources + global_resources, expected_tags)
+        mocked_perform_tagging.assert_called_once_with(
+            regional_resources + global_resources, expected_tags
+        )
 
-    def test_lambda_in_tag_mode_account_without_orga_role(self, env_for_tag_mode_account_without_orga_role):
+    def test_lambda_in_tag_mode_account_without_orga_role(
+        self, env_for_tag_mode_account_without_orga_role
+    ):
         with pytest.raises(ConfigurationError):
             lambda_handler(None, None)
 
-    def test_lambda_in_tag_mode_account_failing_to_fetch_credentials(self, mocker, env_for_tag_mode_account):
+    def test_lambda_in_tag_mode_account_failing_to_fetch_credentials(
+        self, mocker, env_for_tag_mode_account
+    ):
         mocked_boto_client = mocker.patch.object(boto3, "client")
         mocked_boto_client.return_value.assume_role.side_effect = ClientError(
             operation_name="assume_role",
-            error_response={
-                "Error": {
-                    "Code": "UnauthorizedException"
-                }
-            }
+            error_response={"Error": {"Code": "UnauthorizedException"}},
         )
 
         with pytest.raises(ClientError):
             lambda_handler(None, None)
 
-    def test_lambda_in_tag_mode_account_failing_to_fetch_tags(self, mocker, env_for_tag_mode_account):
+    def test_lambda_in_tag_mode_account_failing_to_fetch_tags(
+        self, mocker, env_for_tag_mode_account
+    ):
         mocked_boto_client = mocker.patch.object(boto3, "client")
         mocked_boto_client.return_value.assume_role.return_value = {
-            "Credentials": {"AccessKeyId": "access_key", "SecretAccessKey": "secret_key", "SessionToken": "token1"}}
-        mocked_list_tags_for_resource = mocked_boto_client.return_value.list_tags_for_resource
+            "Credentials": {
+                "AccessKeyId": "access_key",
+                "SecretAccessKey": "secret_key",
+                "SessionToken": "token1",
+            }
+        }
+        mocked_list_tags_for_resource = (
+            mocked_boto_client.return_value.list_tags_for_resource
+        )
         mocked_list_tags_for_resource.side_effect = ClientError(
             operation_name="list_tags_for_resource",
-            error_response={
-                "Error": {
-                    "Code": "UnauthorizedException"
-                }
-            }
+            error_response={"Error": {"Code": "UnauthorizedException"}},
         )
 
         with pytest.raises(ClientError):

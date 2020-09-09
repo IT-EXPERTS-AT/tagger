@@ -17,9 +17,15 @@ logger.setLevel(LOGLEVEL)
 def lambda_handler(event, context):
     lambda_config = fetch_lambda_env_config()
     tags = fetch_tags(lambda_config)
-    credentials = get_iam_credentials_for_role(lambda_config["ACCOUNT_ROLE"], "ACCOUNT_ROLE_SESSION")
+    credentials = get_iam_credentials_for_role(
+        lambda_config["ACCOUNT_ROLE"], "ACCOUNT_ROLE_SESSION"
+    )
     set_config(
-        Config(credentials=credentials, account_id=lambda_config["ACCOUNT_ID"], profile="ignored")
+        Config(
+            credentials=credentials,
+            account_id=lambda_config["ACCOUNT_ID"],
+            profile="ignored",
+        )
     )
     regional_resources = scan_region(lambda_config["REGION"])
     if lambda_config["TAG_GLOBAL_RES"] == "TRUE":
@@ -38,7 +44,7 @@ def fetch_lambda_env_config() -> Dict[str, Any]:
         "REGION": os.environ["REGION"],
         "TAG_GLOBAL_RES": os.environ.get("TAG_GLOBAL_RES", "TRUE").upper(),
         "TAG_MODE": os.environ.get("TAG_MODE", "ACCOUNT").upper(),
-        "TAGS": os.environ.get("TAGS", "")
+        "TAGS": os.environ.get("TAGS", ""),
     }
 
 
@@ -47,7 +53,8 @@ def fetch_tags(config: Dict[str, Any]) -> List[Tag]:
     tag_mode = config["TAG_MODE"]
     if tag_mode == "ACCOUNT":
         tags = fetch_tags_for_account(
-            get_iam_credentials_for_role(config["ORGA_ROLE"], "ORGA_ROLE_SESSION"), config["ACCOUNT_ID"]
+            get_iam_credentials_for_role(config["ORGA_ROLE"], "ORGA_ROLE_SESSION"),
+            config["ACCOUNT_ID"],
         )
         print(tags)
     elif tag_mode == "ENV":
@@ -80,7 +87,7 @@ def get_iam_credentials_for_role(role: str, session_name: str) -> Credentials:
 
 def fetch_tags_for_account(credentials: Credentials, account_id: str) -> List[Tag]:
     try:
-        client = boto3.client('organizations', **credentials)
+        client = boto3.client("organizations", **credentials)
         tag_response = client.list_tags_for_resource(ResourceId=account_id)
         tags = tag_response["Tags"]
         account_tags = []
