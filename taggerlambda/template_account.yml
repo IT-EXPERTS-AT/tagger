@@ -4,7 +4,7 @@ Resources:
   AccountTaggingLambda:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: src.lambda.lambda_handler
+      Handler: src.tagging_lambda.lambda_handler
       Runtime: python3.8
       Events:
         SchedulingEvent:
