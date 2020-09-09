@@ -1,6 +1,13 @@
 # Taggerlambda
 
-### Prerequisites
+## About
+Taggerlambda helps you with managing your AWS tags. It can be scheduled to run periodically in your AWS account, search for resources and apply configured  tags to those resources.   
+All resources listed in the [taggercore README](../taggercore/README.md) are supported.
+  
+Please take a look at the scenarios section for the different deployment strategies.
+
+
+## Prerequisites
 SAM CLI installed ([installation guide](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html))
 
 SAM needs an S3 bucket, you can create one by running  
@@ -30,21 +37,30 @@ sam deploy --s3-bucket {YOUR_BUCKET_NAME} --stack-name {STACK_NAME} --region {YO
 The bucket name in the package-command must match the bucket name in the deploy-command.  
 Feel free to choose a name for the deployed stack by setting `--stack-name`
 
-### Scenarios
-#### Cross account deployment with account tags
+## General configuration
+**`TAG_GLOBAL_RES`**   
+indicates whether global resources (e.g. IAM, Cloudfront) should be tagged 
+```yaml
+Environment:
+    Variables:
+      TAG_GLOBAL_RES: 'TRUE'
+```
+
+## Scenarios
+### Cross account deployment with account tags
 ![](tagging_architecture_cross_account_account_tags.jpg)
 
 The lambda function will be deployed in a management account.  
 It fetches tags attached to the Service 1 account, scans the Service 1 account and applies the fetched tags to the scanning result.  
 Every tag applied to the Service 1 account will be attached to the scanned resources.
-##### Configuration  
+#### Configuration  
 Please specify the following ENV variables in  [template_cross_account.yml](template_cross_account.yml)
 ```yaml
 Environment:
     Variables:
       TAG_MODE: 'ACCOUNT'
       TAGS: '{YOUR_TAGS}' # e.g. Project=Marketing, Owner=Team1
-      ACCOUNT_ID: {SERVICE_1_ACCOUNT_ID}
+      ACCOUNT_ID: '{SERVICE_1_ACCOUNT_ID}'
       ORGA_ROLE: 'ORGA_ROLE_ARN'
       ACCOUNT_ROLE: '{ACCOUNT_ROLE_ARN}'
       REGION: '{REGION_NAME}' #e.g. eu-central-1
@@ -142,13 +158,13 @@ This role needs a trust relationship too:
 Please replace `{MANAGEMENT_ACCOUNT_ID}` with the AWS account id of your management account.
 
 
-#### Cross account deployment with env tags
+### Cross account deployment with env tags
 ![](tagging_architecture_cross_account_env_tags.jpg)
 
 The lambda function will be deployed in a management account. Tags from the ENV variable `TAGS` will be used.
 Every tag found in the ENV variable will be attached to the scanned resources (located account Service 1).
 
-##### Configuration  
+#### Configuration  
 Please specify the following ENV variables in  [template_cross_account.yml](template_cross_account.yml)
 
 ```yaml
@@ -156,7 +172,7 @@ Environment:
     Variables:
       TAG_MODE: 'ENV'
       TAGS: '{YOUR_TAGS}' # e.g. Project=Marketing, Owner=Team1
-      ACCOUNT_ID: {SERVICE_1_ACCOUNT_ID}
+      ACCOUNT_ID: '{SERVICE_1_ACCOUNT_ID}'
       ACCOUNT_ROLE: '{ACCOUNT_ROLE_ARN}'
       REGION: '{REGION_NAME}' #e.g. eu-central-1
 ```
@@ -166,7 +182,7 @@ Environment:
 Please see use the configuration from [Scenario 1](#cross-account-deployment-with-account-tags)
 
 
-#### Account deployment with env tags
+### Account deployment with env tags
 
 ![](tagging_architecture_account_env_tags.jpg)
 
@@ -174,14 +190,14 @@ The lambda function will be deployed in the account it should scan and tag.
 Tags from the ENV variable `TAGS` will be used.
 Every tag found in the ENV variable will be attached to the scanned resources (located account Service 1).
 
-#### Configuration
+### Configuration
 Please specify the following ENV variables in  [template_account.yml](template_account.yml)
 ```yaml
 Environment:
     Variables:
       TAG_MODE: 'ENV'
       TAGS: '{YOUR_TAGS}' # e.g. Project=Marketing, Owner=Team1
-      ACCOUNT_ID: {SERVICE_1_ACCOUNT_ID}
+      ACCOUNT_ID: '{SERVICE_1_ACCOUNT_ID}'
       ACCOUNT_ROLE: '{ACCOUNT_ROLE_ARN}'
       REGION: '{REGION_NAME}' #e.g. eu-central-1
      
@@ -236,3 +252,12 @@ Custom:
     ]
 }
 ```
+
+
+## Development
+
+### Tests
+
+Tests are excuted with pytest, move to taggerlambda dir and execute:  
+
+`pytest  -vv --cov=./src --cov-fail-under=80 --cov-report term-missing  --cov-report=xml`
