@@ -7,5 +7,5 @@ PyYAML==5.3.1
 s3transfer==0.3.3
 six==1.15.0
 skew @ git+https://github.com/tobHai/skew.git@57b43d89a4adc87c3b61ad251df73572c5a9fe4a
-taggercore @ git+https://github.com/IT-EXPERTS-AT/tagger.git@2b7d7309044987c58c49452a213a17d25258bf0a#subdirectory=taggercore
+taggercore @ git+https://github.com/IT-EXPERTS-AT/tagger.git@e2d28dcc150428ab574b6ae15d3206b3b5452cf7#subdirectory=taggercore
 urllib3==1.25.10
