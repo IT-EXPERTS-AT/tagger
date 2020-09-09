@@ -2,5 +2,8 @@
 Pipfile
 Pipfile.lock
 taggerlambda.iml
-template_cross_acount_prod.yml
+template_cross_account_prod.yml
 template_account_prod.yml
+.coverage
+.tox
+taggerlambda.egg-info
