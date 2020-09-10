@@ -1,0 +1,11 @@
+boto3==1.14.55
+botocore==1.17.55
+docutils==0.15.2
+jmespath==0.10.0
+python-dateutil==2.8.1
+PyYAML==5.3.1
+s3transfer==0.3.3
+six==1.15.0
+skew @ git+https://github.com/tobHai/skew.git@57b43d89a4adc87c3b61ad251df73572c5a9fe4a
+taggercore @ git+https://github.com/IT-EXPERTS-AT/tagger.git@master#subdirectory=taggercore
+urllib3==1.25.10

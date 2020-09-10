@@ -1,0 +1,9 @@
+.aws-sam
+Pipfile
+Pipfile.lock
+taggerlambda.iml
+template_cross_account_prod.yml
+template_account_prod.yml
+.coverage
+.tox
+taggerlambda.egg-info
