@@ -271,3 +271,7 @@ Tests are executed with pytest.
 Move to taggerlambda dir and execute:  
 
 `pytest  -vv --cov=./src --cov-fail-under=80 --cov-report term-missing  --cov-report=xml`
+
+### Formatting
+
+Taggerlambda uses [black](https://github.com/psf/black) to format code. 
