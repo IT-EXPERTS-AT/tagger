@@ -5,7 +5,7 @@ from typing import Dict, Any, List
 import boto3
 from botocore.exceptions import ClientError
 from taggercore.config import set_config, Config, Credentials
-from taggercore.model import Tag
+from taggercore.model import Tag, TaggingResult
 from taggercore.usecase import perform_tagging, scan_region, scan_global
 
 LOGLEVEL = os.environ.get("LOGLEVEL", "INFO").upper()
@@ -33,7 +33,7 @@ def lambda_handler(event, context):
     else:
         global_resources = []
     tagging_result = perform_tagging(regional_resources + global_resources, tags)
-    logger.info(tagging_result)
+    log_tagging_result(tagging_result)
 
 
 def fetch_lambda_env_config() -> Dict[str, Any]:
@@ -116,6 +116,13 @@ def fetch_tags_from_env(config: Dict[str, Any]) -> List[Tag]:
 
 def remove_whitespace(input_str: str) -> str:
     return input_str.lstrip().rstrip()
+
+
+def log_tagging_result(tagging_result: TaggingResult) -> None:
+    logger.info(f"Tagged {len(tagging_result.successful_arns)} resources successfully")
+    logger.info(f"Failed to tag {len(tagging_result.failed_arns)} resources")
+    for failed_resource, error_msg in tagging_result.failed_arns.items():
+        logger.error(f"Resource {failed_resource}: {error_msg}")
 
 
 class ConfigurationError(Exception):

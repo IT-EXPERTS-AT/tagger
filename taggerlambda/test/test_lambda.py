@@ -112,6 +112,17 @@ def tagging_result(regional_resources, global_resources) -> TaggingResult:
     yield TaggingResult(successful_arns, {})
 
 
+@pytest.fixture(scope="module")
+def tagging_result_with_failed_res(
+    regional_resources, global_resources
+) -> TaggingResult:
+    successful_arns = [resource.arn for resource in global_resources]
+    failed_arns = {
+        resource.arn: "Failed to tag resource" for resource in regional_resources
+    }
+    yield TaggingResult(successful_arns, failed_arns)
+
+
 class TestLambda:
     def test_lambda_in_tag_mode_env(
         self,
@@ -189,7 +200,8 @@ class TestLambda:
         env_for_tag_mode_account,
         regional_resources,
         global_resources,
-        tagging_result,
+        tagging_result_with_failed_res,
+        caplog,
     ):
         mocked_region_scan = mocker.patch("src.tagging_lambda.scan_region")
         mocked_region_scan.return_value = regional_resources
@@ -198,7 +210,7 @@ class TestLambda:
         mocked_global_scan.return_value = global_resources
 
         mocked_perform_tagging = mocker.patch("src.tagging_lambda.perform_tagging")
-        mocked_perform_tagging.return_value = tagging_result
+        mocked_perform_tagging.return_value = tagging_result_with_failed_res
 
         mocked_boto_client = mocker.patch.object(boto3, "client")
         mocked_boto_client.return_value.assume_role.return_value = {
@@ -229,6 +241,8 @@ class TestLambda:
         mocked_perform_tagging.assert_called_once_with(
             regional_resources + global_resources, expected_tags
         )
+        for failed_res in tagging_result_with_failed_res.failed_arns.keys():
+            assert failed_res in caplog.text
 
     def test_lambda_in_tag_mode_account_without_orga_role(
         self, env_for_tag_mode_account_without_orga_role
