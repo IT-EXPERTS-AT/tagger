@@ -1,5 +1,7 @@
 # Tagger 
-[![codecov](https://codecov.io/gh/IT-EXPERTS-AT/tagger/branch/master/graph/badge.svg?flag=taggercli)](https://codecov.io/gh/IT-EXPERTS-AT/tagger) ![build](https://github.com/IT-EXPERTS-AT/tagger/workflows/Cli-build/badge.svg)  [![codecov](https://codecov.io/gh/IT-EXPERTS-AT/tagger/branch/master/graph/badge.svg?flag=taggercore)](https://codecov.io/gh/IT-EXPERTS-AT/tagger) ![build](https://github.com/IT-EXPERTS-AT/tagger/workflows/Core-build/badge.svg)  
+![build](https://github.com/IT-EXPERTS-AT/tagger/workflows/Core-build/badge.svg) [![codecov](https://codecov.io/gh/IT-EXPERTS-AT/tagger/branch/master/graph/badge.svg?flag=taggercore)](https://codecov.io/gh/IT-EXPERTS-AT/tagger)   
+![build](https://github.com/IT-EXPERTS-AT/tagger/workflows/Cli-build/badge.svg)  [![codecov](https://codecov.io/gh/IT-EXPERTS-AT/tagger/branch/master/graph/badge.svg?flag=taggercli)](https://codecov.io/gh/IT-EXPERTS-AT/tagger)  
+![build](https://github.com/IT-EXPERTS-AT/tagger/workflows/Lambda-build/badge.svg) [![codecov](https://codecov.io/gh/IT-EXPERTS-AT/tagger/branch/master/graph/badge.svg?flag=taggerlambda)](https://codecov.io/gh/IT-EXPERTS-AT/tagger)  
 ## About
 This project contains `taggercore`, `taggercli` and `taggerlambda`
 
