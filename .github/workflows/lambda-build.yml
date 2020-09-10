@@ -1,4 +1,4 @@
-name: Core-build
+name: Lambda-build
 
 defaults:
   run:
@@ -25,7 +25,8 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install pytest
+           if [ -f dev-requirements.txt ]; then pip install -r dev-requirements.txt; fi
+           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
       - name: Validate style with black
         uses: lgeiger/black-action@v1.0.1
         with:
