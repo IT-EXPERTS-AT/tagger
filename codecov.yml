@@ -9,6 +9,10 @@ coverage:
         target: auto
         flags:
           - taggercore
+      taggerlambda:
+        target: auto
+        flags:
+          - taggerlambda
 comment:
   layout: "reach, diff, flags, files"
   behavior: default
@@ -21,4 +25,8 @@ flags:
   taggercore:
     paths:
       - taggercore/
+    carryforward: true
+  taggerlambda:
+    paths:
+      - taggerlambda/
     carryforward: true
