@@ -17,9 +17,9 @@ SAM needs an S3 bucket, you can create one by running
 
 Taggerlambda uses [SAM](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/what-is-sam.html) for deployment.
 
-First choose a deployment scenario from below.   
-Take a look at the configuration section of each scenario and apply the config to one of the template files.  
-Once the template files has been adapted, you can start the sam build by running:
+To get started select a deployment scenario from below.   
+Take a look at the configuration section of selected scenario and fill in the placeholders in the template.yml files.  
+Afterwards you can start the sam build by running:
 ```bash
 sam build -t template_account.yml
 ```
@@ -60,7 +60,7 @@ Please see the [AWS documentation](https://docs.aws.amazon.com/eventbridge/lates
 ![](tagging_architecture_cross_account_account_tags.jpg)
 
 The lambda function will be deployed in a management account.  
-It fetches tags attached to the Service 1 account, scans the Service 1 account and applies the fetched tags to the scanning result.  
+It fetches tags attached to the Service 1 account, scans the Service 1 account and applies the tags to the scanning result.  
 Every tag applied to the Service 1 account will be attached to the scanned resources.
 #### Configuration  
 Please specify the following ENV variables in  [template_cross_account.yml](template_cross_account.yml)
@@ -77,7 +77,7 @@ Environment:
 **`ORGA_ROLE`** 
 
 This role needs access to the Organization API.  
-Currently, this is only possible by using a role in the master account of the organization.
+Currently, this is only possible by using a role in the **master** account of the organization.
 The role should have the policy: 
 `AWSOrganizationsReadOnlyAccess` and a **trust relationship** with the **management** account:
 ```
@@ -93,7 +93,7 @@ The role should have the policy:
          "Condition": {}
        }
      ]
-   }
+}
 ```
 Please replace `{MANAGEMENT_ACCOUNT_ID}` with the AWS account id of your management account.
 
@@ -162,7 +162,7 @@ This role needs a trust relationship too:
          "Condition": {}
        }
      ]
-   }
+}
 ```
 Please replace `{MANAGEMENT_ACCOUNT_ID}` with the AWS account id of your management account.
 
@@ -195,9 +195,9 @@ Please see use the configuration from [Scenario 1](#cross-account-deployment-wit
 
 ![](tagging_architecture_account_env_tags.jpg)
 
-The lambda function will be deployed in the account it should scan and tag.   
-Tags from the ENV variable `TAGS` will be used.
-Every tag found in the ENV variable will be attached to the scanned resources (located account Service 1).
+The lambda function will be deployed in the account it should scan and tag.  
+Tags from the ENV variable `TAGS` will be used.  
+Each tag found in the ENV variable will be attached to the scanned resources (located in account Service 1).
 
 ### Configuration
 Please specify the following ENV variables in  [template_account.yml](template_account.yml)
@@ -267,6 +267,7 @@ Custom:
 
 ### Tests
 
-Tests are excuted with pytest, move to taggerlambda dir and execute:  
+Tests are executed with pytest.   
+Move to taggerlambda dir and execute:  
 
 `pytest  -vv --cov=./src --cov-fail-under=80 --cov-report term-missing  --cov-report=xml`
