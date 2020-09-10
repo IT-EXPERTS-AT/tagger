@@ -1,5 +1,5 @@
 # Taggerlambda
-
+[![codecov](https://codecov.io/gh/IT-EXPERTS-AT/tagger/branch/master/graph/badge.svg?flag=taggerlambda)](https://codecov.io/gh/IT-EXPERTS-AT/tagger) ![build](https://github.com/IT-EXPERTS-AT/tagger/workflows/Lambda-build/badge.svg)
 ## About
 Taggerlambda helps you with managing your AWS tags. It can be scheduled to run periodically in your AWS account, search for resources and apply configured tags to those resources.   
 All resources listed in the [taggercore README](../taggercore/README.md) are supported.
