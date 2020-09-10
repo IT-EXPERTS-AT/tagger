@@ -56,7 +56,6 @@ def fetch_tags(config: Dict[str, Any]) -> List[Tag]:
             get_iam_credentials_for_role(config["ORGA_ROLE"], "ORGA_ROLE_SESSION"),
             config["ACCOUNT_ID"],
         )
-        print(tags)
     elif tag_mode == "ENV":
         tags = fetch_tags_from_env(config)
     logger.info(f"Found tags {tags}")
