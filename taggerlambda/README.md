@@ -1,7 +1,7 @@
 # Taggerlambda
 
 ## About
-Taggerlambda helps you with managing your AWS tags. It can be scheduled to run periodically in your AWS account, search for resources and apply configured  tags to those resources.   
+Taggerlambda helps you with managing your AWS tags. It can be scheduled to run periodically in your AWS account, search for resources and apply configured tags to those resources.   
 All resources listed in the [taggercore README](../taggercore/README.md) are supported.
   
 Please take a look at the scenarios section for the different deployment strategies.
@@ -45,7 +45,16 @@ Environment:
     Variables:
       TAG_GLOBAL_RES: 'TRUE'
 ```
-
+**Schedule**
+```yaml
+Events:
+    SchedulingEvent:
+      Type: Schedule
+      Properties:
+        Schedule: rate(1 day)
+```
+The standard templates use a CloudWatch Event to trigger the Lambda function. 
+Please see the [AWS documentation](https://docs.aws.amazon.com/eventbridge/latest/userguide/scheduled-events.html) for all the supported scheduling expressions! 
 ## Scenarios
 ### Cross account deployment with account tags
 ![](tagging_architecture_cross_account_account_tags.jpg)
